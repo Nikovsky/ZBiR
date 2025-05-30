@@ -92,8 +92,5 @@ Projekt objęty prywatną licencją – wszelkie wdrożenia możliwe wyłącznie
 ---
 
 ## Aplikacja stworzona przez:
-<a href="https://github.com/Nikovsky/HARO/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=HARO/Wywiezione" />
-</a>
-
+![contributors badge](https://readme-contribs.as93.net/contributors/Nikovsky/HARO)
 > © 2025 HARO – Harcerska Obsługa Rozliczeń  
