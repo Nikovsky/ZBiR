@@ -2,7 +2,7 @@
   <img src="./img/Logo.png" alt="HARO logo" width="180"/>
 </p>
 
-<h2 align="center"><strong>Harcerska Obsługa Rozliczeń</strong></h2>
+<h2 align="center"><strong>Zarządzenie Budżetem i Rozliczeniami</strong></h2>
 
 <div align="center">
     <p><img alt="Status" src="https://img.shields.io/badge/status-w%20trakcie%20budowy-orange">
@@ -15,7 +15,7 @@
 
 ## 🎯 Cel projektu
 
-Aplikacja **HARO** powstała jako odpowiedź na ograniczenia Excela w zarządzaniu finansami HAL/ZHL. Umożliwia:
+Aplikacja **ZBiR** powstała jako odpowiedź na ograniczenia Excela w zarządzaniu finansami HAL/ZHL. Umożliwia:
 - wygodne wprowadzanie danych,
 - pracę wielu użytkowników (komendant, kwatermistrz),
 - zatwierdzanie przez skarbnika okręgu,
@@ -66,11 +66,12 @@ Aplikacja **HARO** powstała jako odpowiedź na ograniczenia Excela w zarządzan
 
 ---
 
-## 🔐 Wymogi wdrożeniowe
+## 📈 Kierunki rozwoju
+W kolejnych etapach planujemy rozszerzyć **ZBiR** o funkcjonalności umożliwiające:
+- rozliczanie **pojedynczych jednostek** (np. drużyny, szczepy),
+- Wydajne korzystanie z urządzen mobilnych (Progressive Web App)
 
-- Aplikacja działa na serwerach ZHR.
-- Wdrożenie wymaga kontaktu z autorami.
-- Konfiguracja Docker Compose z usługami: `next`, `nestjs`, `postgres`, `redis`.
+Jeśli chcesz zasugerować inne funkcje – otwórz [issue](../../issues) lub skontaktuj się z nami bezpośrednio.
 
 ## 🧠 Architektura logiczna
 
@@ -92,5 +93,5 @@ Projekt objęty prywatną licencją – wszelkie wdrożenia możliwe wyłącznie
 ---
 
 ## Aplikacja stworzona przez:
-![contributors badge](https://readme-contribs.as93.net/contributors/Nikovsky/HARO)
-> © 2025 HARO – Harcerska Obsługa Rozliczeń  
+![contributors badge](https://readme-contribs.as93.net/contributors/Nikovsky/ZBIR)
+> © 2025 ZBiR - Zarządzenie Budżetem i Rozliczeniami
