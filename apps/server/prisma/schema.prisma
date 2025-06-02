@@ -15,8 +15,24 @@ datasource db {
 
 enum UserRole {
   ADMIN
+  SKARBNIK
+  SKARBNIK_REGION
   USER
-  JUDGE
+}
+
+enum UserRegion {
+  DOLNOSLASKI
+  GORNOSLASKI
+  KUJAWSKO_POMORSKI
+  LUBELSKI
+  LODZKI
+  MALOPOLSKI
+  MAZOWIECKI
+  PODKARPACKI
+  POMORSKI
+  POLNOCNO_ZACHODNI
+  STAROPOLSKI
+  WIELKOPOLSKI
 }
 
 model User {
@@ -39,6 +55,11 @@ model User {
   accounts      Account[]
   sessions      Session[]
   Authenticator Authenticator[]
+  camp Camp[]
+  created_entries Fico_Entry[] @relation("created_entries")
+  updated_entries Fico_Entry[] @relation("updated_entries")
+  userToCamps   UserToCamp[]
+  regionAccess UserRegionAccess[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -110,3 +131,115 @@ model Authenticator {
 
   @@id([userId, credentialID])
 }
+
+// Camp
+model Camp {
+  id              String   @id @default(uuid())
+  name            String
+  year            Int
+  region          UserRegion
+  isClosed        Boolean   @default(false)
+  approvedAt      DateTime?
+
+    // Podsumowania (dla PDF, kontroli, audytu)
+  incomeSum       Float         @default(0)
+  expenseSum      Float         @default(0)
+  balanceFinal    Float         @default(0)
+
+  ownerId          String
+  owner           User @relation(fields: [ownerId], references: [id])
+
+  entries         Fico_Entry[]
+  participants    UserToCamp[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Fico_Entry {
+  id_fico           String @id @default(uuid())
+  fico_date    DateTime
+  fico_description String
+
+  lp Int
+
+  bankDeposit Float?
+  bankWithdrawal Float?
+
+  // Wypłaty szczegółowe
+  grantHq Float?
+  grantEdu   Float?
+  grantMuni Float?
+  incomeActions Float?
+  incomeParticipantFee Float?
+  donationPrivate Float?
+  donationOrg Float?
+  incomeOnePercent Float?
+  incomeOther Float?
+
+  // Wydatki szczegółowe
+  expEquipment Float?
+  expMaterials Float?
+  expCleaning Float?
+  expOtherMaterials Float?
+  expEnergy Float?
+  expPhone Float?
+  expRent Float?
+  expPost Float?
+  expBank Float?
+  expCourier Float?
+  expServices Float?
+  expSalary Float?
+  expInsuranceOC Float?
+  expInsuranceNNW Float?
+  expTravel Float?
+  expFood Float?
+  expRewards Float?
+  expTickets Float?
+  expAccommodation Float?
+  expTransport Float?
+  expOther Float?
+
+  incomeTotal           Float
+  expenseTotal          Float
+  balance               Float
+
+  campId String
+  camp Camp @relation(fields: [campId], references: [id])
+
+  createdById String
+  updatedById String?
+
+  createdBy User @relation("created_entries", fields: [createdById], references: [id])
+  updatedBy User? @relation("updated_entries", fields: [updatedById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([campId, lp])
+}
+
+model UserToCamp {
+  id        String   @id @default(uuid())
+
+  userId    String
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  campId    String
+  camp      Camp @relation(fields: [campId], references: [id], onDelete: Cascade)
+
+  accepted Boolean @default(false)
+
+  @@unique([userId, campId])
+}
+
+model UserRegionAccess {
+  id     String      @id @default(uuid())
+  userId String
+  region UserRegion
+
+  user   User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, region])
+}
+
