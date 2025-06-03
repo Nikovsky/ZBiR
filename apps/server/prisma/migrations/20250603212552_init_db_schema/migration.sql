@@ -97,65 +97,64 @@ CREATE TABLE `Camp` (
     `region` ENUM('DOLNOSLASKI', 'GORNOSLASKI', 'KUJAWSKO_POMORSKI', 'LUBELSKI', 'LODZKI', 'MALOPOLSKI', 'MAZOWIECKI', 'PODKARPACKI', 'POMORSKI', 'POLNOCNO_ZACHODNI', 'STAROPOLSKI', 'WIELKOPOLSKI') NOT NULL,
     `isClosed` BOOLEAN NOT NULL DEFAULT false,
     `approvedAt` DATETIME(3) NULL,
-    `incomeSum` DOUBLE NOT NULL DEFAULT 0,
-    `expenseSum` DOUBLE NOT NULL DEFAULT 0,
-    `balanceFinal` DOUBLE NOT NULL DEFAULT 0,
+    `incomeSum` DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
+    `expenseSum` DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
+    `balanceFinal` DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
     `ownerId` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
+    INDEX `Camp_year_idx`(`year`),
+    INDEX `Camp_region_idx`(`region`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Fico_Entry` (
-    `id_fico` VARCHAR(191) NOT NULL,
-    `fico_date` DATETIME(3) NOT NULL,
-    `fico_description` VARCHAR(191) NOT NULL,
-    `lp` INTEGER NOT NULL,
-    `bankDeposit` DOUBLE NULL,
-    `bankWithdrawal` DOUBLE NULL,
-    `grantHq` DOUBLE NULL,
-    `grantEdu` DOUBLE NULL,
-    `grantMuni` DOUBLE NULL,
-    `incomeActions` DOUBLE NULL,
-    `incomeParticipantFee` DOUBLE NULL,
-    `donationPrivate` DOUBLE NULL,
-    `donationOrg` DOUBLE NULL,
-    `incomeOnePercent` DOUBLE NULL,
-    `incomeOther` DOUBLE NULL,
-    `expEquipment` DOUBLE NULL,
-    `expMaterials` DOUBLE NULL,
-    `expCleaning` DOUBLE NULL,
-    `expOtherMaterials` DOUBLE NULL,
-    `expEnergy` DOUBLE NULL,
-    `expPhone` DOUBLE NULL,
-    `expRent` DOUBLE NULL,
-    `expPost` DOUBLE NULL,
-    `expBank` DOUBLE NULL,
-    `expCourier` DOUBLE NULL,
-    `expServices` DOUBLE NULL,
-    `expSalary` DOUBLE NULL,
-    `expInsuranceOC` DOUBLE NULL,
-    `expInsuranceNNW` DOUBLE NULL,
-    `expTravel` DOUBLE NULL,
-    `expFood` DOUBLE NULL,
-    `expRewards` DOUBLE NULL,
-    `expTickets` DOUBLE NULL,
-    `expAccommodation` DOUBLE NULL,
-    `expTransport` DOUBLE NULL,
-    `expOther` DOUBLE NULL,
-    `incomeTotal` DOUBLE NOT NULL,
-    `expenseTotal` DOUBLE NOT NULL,
-    `balance` DOUBLE NOT NULL,
+CREATE TABLE `FicoEntry` (
+    `id` VARCHAR(191) NOT NULL,
+    `ficoDate` DATETIME(3) NOT NULL,
+    `ficoDescription` VARCHAR(191) NOT NULL,
+    `bankDeposit` DECIMAL(15, 2) NULL,
+    `bankWithdrawal` DECIMAL(15, 2) NULL,
+    `grantHq` DECIMAL(15, 2) NULL,
+    `grantEdu` DECIMAL(15, 2) NULL,
+    `grantMuni` DECIMAL(15, 2) NULL,
+    `incomeActions` DECIMAL(15, 2) NULL,
+    `incomeParticipantFee` DECIMAL(15, 2) NULL,
+    `donationPrivate` DECIMAL(15, 2) NULL,
+    `donationOrg` DECIMAL(15, 2) NULL,
+    `incomeOnePercent` DECIMAL(15, 2) NULL,
+    `incomeOther` DECIMAL(15, 2) NULL,
+    `expEquipment` DECIMAL(15, 2) NULL,
+    `expMaterials` DECIMAL(15, 2) NULL,
+    `expCleaning` DECIMAL(15, 2) NULL,
+    `expOtherMaterials` DECIMAL(15, 2) NULL,
+    `expEnergy` DECIMAL(15, 2) NULL,
+    `expPhone` DECIMAL(15, 2) NULL,
+    `expRent` DECIMAL(15, 2) NULL,
+    `expPost` DECIMAL(15, 2) NULL,
+    `expBank` DECIMAL(15, 2) NULL,
+    `expCourier` DECIMAL(15, 2) NULL,
+    `expServices` DECIMAL(15, 2) NULL,
+    `expSalary` DECIMAL(15, 2) NULL,
+    `expInsuranceOC` DECIMAL(15, 2) NULL,
+    `expInsuranceNNW` DECIMAL(15, 2) NULL,
+    `expTravel` DECIMAL(15, 2) NULL,
+    `expFood` DECIMAL(15, 2) NULL,
+    `expRewards` DECIMAL(15, 2) NULL,
+    `expTickets` DECIMAL(15, 2) NULL,
+    `expAccommodation` DECIMAL(15, 2) NULL,
+    `expTransport` DECIMAL(15, 2) NULL,
+    `expOther` DECIMAL(15, 2) NULL,
     `campId` VARCHAR(191) NOT NULL,
     `createdById` VARCHAR(191) NOT NULL,
     `updatedById` VARCHAR(191) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `Fico_Entry_campId_lp_key`(`campId`, `lp`),
-    PRIMARY KEY (`id_fico`)
+    INDEX `FicoEntry_campId_ficoDate_idx`(`campId`, `ficoDate`),
+    INDEX `FicoEntry_campId_idx`(`campId`),
+    PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
@@ -164,7 +163,11 @@ CREATE TABLE `UserToCamp` (
     `userId` VARCHAR(191) NOT NULL,
     `campId` VARCHAR(191) NOT NULL,
     `accepted` BOOLEAN NOT NULL DEFAULT false,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
 
+    INDEX `UserToCamp_userId_idx`(`userId`),
+    INDEX `UserToCamp_campId_idx`(`campId`),
     UNIQUE INDEX `UserToCamp_userId_campId_key`(`userId`, `campId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -174,7 +177,11 @@ CREATE TABLE `UserRegionAccess` (
     `id` VARCHAR(191) NOT NULL,
     `userId` VARCHAR(191) NOT NULL,
     `region` ENUM('DOLNOSLASKI', 'GORNOSLASKI', 'KUJAWSKO_POMORSKI', 'LUBELSKI', 'LODZKI', 'MALOPOLSKI', 'MAZOWIECKI', 'PODKARPACKI', 'POMORSKI', 'POLNOCNO_ZACHODNI', 'STAROPOLSKI', 'WIELKOPOLSKI') NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
 
+    INDEX `UserRegionAccess_userId_idx`(`userId`),
+    INDEX `UserRegionAccess_region_idx`(`region`),
     UNIQUE INDEX `UserRegionAccess_userId_region_key`(`userId`, `region`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -192,13 +199,13 @@ ALTER TABLE `Authenticator` ADD CONSTRAINT `Authenticator_userId_fkey` FOREIGN K
 ALTER TABLE `Camp` ADD CONSTRAINT `Camp_ownerId_fkey` FOREIGN KEY (`ownerId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Fico_Entry` ADD CONSTRAINT `Fico_Entry_campId_fkey` FOREIGN KEY (`campId`) REFERENCES `Camp`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `FicoEntry` ADD CONSTRAINT `FicoEntry_campId_fkey` FOREIGN KEY (`campId`) REFERENCES `Camp`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Fico_Entry` ADD CONSTRAINT `Fico_Entry_createdById_fkey` FOREIGN KEY (`createdById`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `FicoEntry` ADD CONSTRAINT `FicoEntry_createdById_fkey` FOREIGN KEY (`createdById`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Fico_Entry` ADD CONSTRAINT `Fico_Entry_updatedById_fkey` FOREIGN KEY (`updatedById`) REFERENCES `User`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `FicoEntry` ADD CONSTRAINT `FicoEntry_updatedById_fkey` FOREIGN KEY (`updatedById`) REFERENCES `User`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `UserToCamp` ADD CONSTRAINT `UserToCamp_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

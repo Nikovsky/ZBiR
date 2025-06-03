@@ -52,14 +52,14 @@ model User {
 
   role UserRole @default(USER)
 
-  accounts      Account[]
-  sessions      Session[]
-  Authenticator Authenticator[]
-  camp Camp[]
-  created_entries Fico_Entry[] @relation("created_entries")
-  updated_entries Fico_Entry[] @relation("updated_entries")
-  userToCamps   UserToCamp[]
-  regionAccess UserRegionAccess[]
+  accounts       Account[]
+  sessions       Session[]
+  Authenticator  Authenticator[]
+  campsOwning    Camp[]             @relation("campOwner")
+  createdEntries FicoEntry[]        @relation("entryCreatedBy")
+  updatedEntries FicoEntry[]        @relation("entryUpdatedBy")
+  userToCamps    UserToCamp[]
+  regionAccess   UserRegionAccess[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -83,7 +83,8 @@ model Account {
   id_token                 String? @db.Text
   session_state            String?
   refresh_token_expires_in Int?
-  user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -132,114 +133,123 @@ model Authenticator {
   @@id([userId, credentialID])
 }
 
-// Camp
+// ---------------- CAMP ----------------
+
 model Camp {
-  id              String   @id @default(uuid())
-  name            String
-  year            Int
-  region          UserRegion
-  isClosed        Boolean   @default(false)
-  approvedAt      DateTime?
+  id         String     @id @default(uuid())
+  name       String
+  year       Int
+  region     UserRegion
+  isClosed   Boolean    @default(false)
+  approvedAt DateTime?
 
-    // Podsumowania (dla PDF, kontroli, audytu)
-  incomeSum       Float         @default(0)
-  expenseSum      Float         @default(0)
-  balanceFinal    Float         @default(0)
+  // Podsumowania (dla PDF, kontroli, audytu)
+  incomeSum    Decimal @default("0.00") @db.Decimal(15, 2)
+  expenseSum   Decimal @default("0.00") @db.Decimal(15, 2)
+  balanceFinal Decimal @default("0.00") @db.Decimal(15, 2)
 
-  ownerId          String
-  owner           User @relation(fields: [ownerId], references: [id])
+  ownerId String
+  owner   User   @relation("campOwner", fields: [ownerId], references: [id])
 
-  entries         Fico_Entry[]
-  participants    UserToCamp[]
+  entries      FicoEntry[]
+  participants UserToCamp[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([year])
+  @@index([region])
 }
 
-model Fico_Entry {
-  id_fico           String @id @default(uuid())
-  fico_date    DateTime
-  fico_description String
+model FicoEntry {
+  id              String   @id @default(uuid())
+  ficoDate        DateTime
+  ficoDescription String
 
-  lp Int
-
-  bankDeposit Float?
-  bankWithdrawal Float?
+  bankDeposit    Decimal? @db.Decimal(15, 2)
+  bankWithdrawal Decimal? @db.Decimal(15, 2)
 
   // Wypłaty szczegółowe
-  grantHq Float?
-  grantEdu   Float?
-  grantMuni Float?
-  incomeActions Float?
-  incomeParticipantFee Float?
-  donationPrivate Float?
-  donationOrg Float?
-  incomeOnePercent Float?
-  incomeOther Float?
+  grantHq              Decimal? @db.Decimal(15, 2)
+  grantEdu             Decimal? @db.Decimal(15, 2)
+  grantMuni            Decimal? @db.Decimal(15, 2)
+  incomeActions        Decimal? @db.Decimal(15, 2)
+  incomeParticipantFee Decimal? @db.Decimal(15, 2)
+  donationPrivate      Decimal? @db.Decimal(15, 2)
+  donationOrg          Decimal? @db.Decimal(15, 2)
+  incomeOnePercent     Decimal? @db.Decimal(15, 2)
+  incomeOther          Decimal? @db.Decimal(15, 2)
 
   // Wydatki szczegółowe
-  expEquipment Float?
-  expMaterials Float?
-  expCleaning Float?
-  expOtherMaterials Float?
-  expEnergy Float?
-  expPhone Float?
-  expRent Float?
-  expPost Float?
-  expBank Float?
-  expCourier Float?
-  expServices Float?
-  expSalary Float?
-  expInsuranceOC Float?
-  expInsuranceNNW Float?
-  expTravel Float?
-  expFood Float?
-  expRewards Float?
-  expTickets Float?
-  expAccommodation Float?
-  expTransport Float?
-  expOther Float?
+  expEquipment      Decimal? @db.Decimal(15, 2)
+  expMaterials      Decimal? @db.Decimal(15, 2)
+  expCleaning       Decimal? @db.Decimal(15, 2)
+  expOtherMaterials Decimal? @db.Decimal(15, 2)
+  expEnergy         Decimal? @db.Decimal(15, 2)
+  expPhone          Decimal? @db.Decimal(15, 2)
+  expRent           Decimal? @db.Decimal(15, 2)
+  expPost           Decimal? @db.Decimal(15, 2)
+  expBank           Decimal? @db.Decimal(15, 2)
+  expCourier        Decimal? @db.Decimal(15, 2)
+  expServices       Decimal? @db.Decimal(15, 2)
+  expSalary         Decimal? @db.Decimal(15, 2)
+  expInsuranceOC    Decimal? @db.Decimal(15, 2)
+  expInsuranceNNW   Decimal? @db.Decimal(15, 2)
+  expTravel         Decimal? @db.Decimal(15, 2)
+  expFood           Decimal? @db.Decimal(15, 2)
+  expRewards        Decimal? @db.Decimal(15, 2)
+  expTickets        Decimal? @db.Decimal(15, 2)
+  expAccommodation  Decimal? @db.Decimal(15, 2)
+  expTransport      Decimal? @db.Decimal(15, 2)
+  expOther          Decimal? @db.Decimal(15, 2)
 
-  incomeTotal           Float
-  expenseTotal          Float
-  balance               Float
-
+  // Relacje
   campId String
-  camp Camp @relation(fields: [campId], references: [id])
+  camp   Camp   @relation(fields: [campId], references: [id])
 
   createdById String
   updatedById String?
 
-  createdBy User @relation("created_entries", fields: [createdById], references: [id])
-  updatedBy User? @relation("updated_entries", fields: [updatedById], references: [id])
+  createdBy User  @relation("entryCreatedBy", fields: [createdById], references: [id])
+  updatedBy User? @relation("entryUpdatedBy", fields: [updatedById], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([campId, lp])
+  @@index([campId, ficoDate])
+  @@index([campId])
 }
 
 model UserToCamp {
-  id        String   @id @default(uuid())
+  id String @id @default(uuid())
 
-  userId    String
-  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  campId    String
-  camp      Camp @relation(fields: [campId], references: [id], onDelete: Cascade)
+  campId String
+  camp   Camp   @relation(fields: [campId], references: [id], onDelete: Cascade)
 
   accepted Boolean @default(false)
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@unique([userId, campId])
+  @@index([userId])
+  @@index([campId])
 }
 
 model UserRegionAccess {
-  id     String      @id @default(uuid())
+  id     String     @id @default(uuid())
   userId String
   region UserRegion
 
-  user   User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([userId, region])
+  @@index([userId])
+  @@index([region])
 }
-
