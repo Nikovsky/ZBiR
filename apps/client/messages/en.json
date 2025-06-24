@@ -1,0 +1,69 @@
+{
+  "HomePage": {
+    "zbir": "Authentication system base",
+    "projectTitle": "About the project",
+    "projectDescription": "<strong>ZBiR</strong> is a scalable and secure platform for user and authorization management, built with <strong>Next.js</strong> (frontend) and <strong>NestJS + Prisma</strong> (backend). The system uses a modern approach to session handling, access and refresh tokens, and is prepared for future containerization, caching, load balancing, and migration to PostgreSQL. The architecture is based on a monorepo aligned with best practices."
+  },
+  "Navbar": {
+    "dashboard": "Dashboard",
+    "signup": "Sign up",
+    "login": "Login"
+  },
+  "Footer": {
+    "rights": "All rights reserved."
+  },
+  "Theme": {
+    "system": {
+      "label": "System",
+      "title": "System mode"
+    },
+    "light": {
+      "label": "Light",
+      "title": "Light mode"
+    },
+    "dark": {
+      "label": "Dark",
+      "title": "Dark mode"
+    }
+  },
+  "Login": {
+    "title": "Login",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Login",
+    "errors": {
+      "email": {
+        "required": "Email is required",
+        "invalid": "Invalid email format"
+      },
+      "password": {
+        "min": "Password must be at least 6 characters"
+      }
+    }
+  },
+  "Register": {
+    "title": "Sign up",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "submit": "Create account",
+    "reset": "Reset",
+    "errors": {
+      "email": {
+        "required": "Email is required",
+        "invalid": "Invalid email format"
+      },
+      "password": {
+        "min": "Password must be at least 6 characters"
+      },
+      "confirmPassword": {
+        "required": "Confirm password is required",
+        "match": "Passwords must match"
+      }
+    }
+  },
+  "DashboardPage": {
+    "title": "User Dashboard",
+    "description": "Welcome to your dashboard. In the future, you’ll find shortcuts, statistics, and account management here."
+  }
+}

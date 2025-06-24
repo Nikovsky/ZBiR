@@ -1,0 +1,14 @@
+{
+  "name": "@zbir/types",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/types/index.d.ts",
+  "scripts": {
+    "types:build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "private": true,
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}

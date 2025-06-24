@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "declarationDir": "./dist/types",
+    "rootDir": "./src",
+    "composite": true,
+    "declaration": true,
+    "lib": [
+      "ES2021"
+    ]
+  },
+  "include": [
+    "src"
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "HomePage": {
+    "zbir": "System bazowy autoryzacji",
+    "projectTitle": "O projekcie",
+    "projectDescription": "<strong>ZBiR</strong> to skalowalna i bezpieczna platforma do zarządzania użytkownikami i autoryzacją, oparta na <strong>Next.js</strong> (frontend) oraz <strong> NestJS + Prisma</strong> (backend). System wykorzystuje nowoczesne podejście do zarządzania sesjami, access i refresh tokenami oraz przygotowany jest pod przyszłą konteneryzację, cache, load balancing i migrację do PostgreSQL. Architektura oparta jest o monorepo zgodne z najlepszymi praktykami."
+  },
+  "Navbar": {
+    "dashboard": "Panel",
+    "signup": "Zarejestruj się",
+    "login": "Zaloguj się"
+  },
+  "Footer": {
+    "rights": "Wszelkie prawa zastrzeżone."
+  },
+  "Theme": {
+    "system": {
+      "label": "System",
+      "title": "Tryb systemowy"
+    },
+    "light": {
+      "label": "Jasny",
+      "title": "Tryb jasny"
+    },
+    "dark": {
+      "label": "Ciemny",
+      "title": "Tryb ciemny"
+    }
+  },
+  "Login": {
+    "title": "Zaloguj się",
+    "email": "Email",
+    "password": "Hasło",
+    "submit": "Zaloguj",
+    "success": {
+      "title": "Sukces",
+      "message": "Zalogowano pomyślnie!"
+    },
+    "errors": {
+      "email": {
+        "required": "Email jest wymagany",
+        "invalid": "Nieprawidłowy format email"
+      },
+      "password": {
+        "min": "Hasło musi mieć co najmniej 6 znaków"
+      }
+    }
+  },
+  "Register": {
+    "title": "Rejestracja",
+    "email": "Email",
+    "password": "Hasło",
+    "confirmPassword": "Potwierdź hasło",
+    "submit": "Zarejestruj się",
+    "reset": "Resetuj",
+    "errors": {
+      "email": {
+        "required": "Email jest wymagany",
+        "invalid": "Nieprawidłowy format email"
+      },
+      "password": {
+        "min": "Hasło musi mieć co najmniej 6 znaków"
+      },
+      "confirmPassword": {
+        "required": "Potwierdzenie hasła jest wymagane",
+        "match": "Hasła muszą być identyczne"
+      }
+    }
+  },
+  "DashboardPage": {
+    "title": "Panel użytkownika",
+    "description": "Witaj w swoim panelu. Tutaj w przyszłości znajdziesz skróty, statystyki i zarządzanie kontem."
+  },
+  "VerifyEmail": {
+    "title": "Weryfikacja adresu e-mail",
+    "sentTo": "Wysłano link weryfikacyjny na",
+    "verifying": "Trwa weryfikacja...",
+    "success": "Adres e-mail został zweryfikowany!",
+    "resend": "Wyślij ponownie link",
+    "resending": "Wysyłanie...",
+    "resent": "Link weryfikacyjny został wysłany",
+    "errors": {
+      "default": "Nie udało się zweryfikować adresu e-mail.",
+      "resendFailed": "Nie udało się wysłać wiadomości."
+    }
+  }
+}
