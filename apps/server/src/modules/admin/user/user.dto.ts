@@ -1,5 +1,5 @@
 // @file: server/src/modules/admin/user/user.dto.ts
-import { UserRole, Gender, AdminPanelEditUserDto, AdminPanelEditPersonalDataDto, AdminPanelEditUserWithPersonalDataDto, AdminPanelCreateUserDto, AdminPanelUserSortFields, AdminPanelUserDto } from '@zbir/types';
+import { UserRole, Gender, AdminPanelEditUserDto, AdminPanelEditPersonalDataDto, AdminPanelEditUserWithPersonalDataDto, AdminPanelCreateUserDto, AdminPanelUserSortFields, AdminPanelPasswordChangeDto } from '@zbir/types';
 import { IsEmail, IsBoolean, IsOptional, IsString, MinLength, ValidateNested, IsUUID, IsDate, IsEnum } from 'class-validator'
 import { Type } from 'class-transformer'
 import { PaginationQueryDto } from '@/dto/pagination-query.dto'
@@ -53,9 +53,7 @@ export class EditUserWithPersonalDataDto extends EditUserDto implements AdminPan
   @IsOptional() @ValidateNested() @Type(() => EditPersonalDataDto) personalData?: EditPersonalDataDto;
 }
 
-export class PasswordChangeDto {
+export class PasswordChangeDto implements AdminPanelPasswordChangeDto {
   @IsString() @IsUUID() id: string;
-  @IsEmail() email: string;
-  @IsString() @MinLength(8) currentPassword: string;
   @IsString() @MinLength(8) newPassword: string;
 }

@@ -48,12 +48,9 @@ export type EditUserFormData = z.infer<typeof editUserFormSchema>
 /**
  * Formularz zmiany hasła admin → user
  */
-export const changePasswordSchema = z
-  .object({
-    id: z.string().uuid(),
-    email: z.string().email(),
-    currentPassword: z.string().min(8, 'Obecne hasło jest wymagane'),
-    newPassword: z.string().min(8, 'Nowe hasło musi mieć co najmniej 8 znaków'),
-  })
+export const changePasswordSchema = z.object({
+  id: z.string().uuid(),
+  newPassword: z.string().min(8, 'Nowe hasło musi mieć co najmniej 8 znaków'),
+})
 
 export type ChangePasswordFormData = z.infer<typeof changePasswordSchema>

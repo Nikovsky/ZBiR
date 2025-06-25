@@ -8,30 +8,25 @@ export enum UserRole {
   USER = "USER",
 }
 
-enum UserRegion {
-  DOLNOSLASKI = "DOLNOŚLĄSKI",
-  GORNOSLASKI = "GÓRNOŚLĄSKI",
-  KUJAWSKO_POMORSKI = "KUJAWSKO-POMORSKI",
+export enum UserRegion {
+  ALL = "ALL",
+  DOLNOSLASKI = "DOLNOSLASKI",
+  GORNOSLASKI = "GORNOSLASKI",
+  KUJAWSKO_POMORSKI = "KUJAWSKO_POMORSKI",
   LUBELSKI = "LUBELSKI",
-  LODZKI = "ŁÓDZKI",
-  MALOPOLSKI = "MAŁOPOLSKI",
+  LODZKI = "LODZKI",
+  MALOPOLSKI = "MALOPOLSKI",
   MAZOWIECKI = "MAZOWIECKI",
   PODKARPACKI = "PODKARPACKI",
   POMORSKI = "POMORSKI",
-  POLNOCNO_ZACHODNI = "PÓŁNOCNO-ZACHODNI",
+  POLNOCNO_ZACHODNI = "POLNOCNO_ZACHODNI",
   STAROPOLSKI = "STAROPOLSKI",
-  WIELKOPOLSKI = "WIELKOPOLSKI",
+  WIELKOPOLSKI = "WIELKOPOLSKI"
 }
 
 export enum Gender {
   MALE = "MALE",
   FEMALE = "FEMALE",
-}
-
-export interface SessionResponse {
-  id: string;
-  email: string;
-  role: UserRole;
-  exp: number; // expiry timestamp (z tokena)
-  iat: number; // issued at
+  OTHER = "OTHER",
+  PREFER_NOT_TO_SAY = "PREFER_NOT_TO_SAY",
 }

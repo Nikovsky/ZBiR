@@ -46,8 +46,6 @@ export default function AdminUserEditPage() {
     resolver: zodResolver(changePasswordSchema),
     defaultValues: {
       id: id!,
-      email: '',
-      currentPassword: '',
       newPassword: ''
     }
   })
@@ -66,7 +64,6 @@ export default function AdminUserEditPage() {
   useEffect(() => {
     if (userData) {
       resetUserFormFromData(userData)
-      passwordForm.setValue('email', userData.email)
     }
   }, [userData])
 
@@ -221,7 +218,6 @@ export default function AdminUserEditPage() {
         <h2 className="text-lg font-semibold">Zmiana hasła</h2>
         <KeyValueTable
           rows={[
-            { label: 'Obecne hasło', content: <input type="password" {...passwordForm.register('currentPassword')} className="input input-sm input-bordered w-full" /> },
             { label: 'Nowe hasło', content: <input type="password" {...passwordForm.register('newPassword')} className="input input-sm input-bordered w-full" /> }
           ]}
         />

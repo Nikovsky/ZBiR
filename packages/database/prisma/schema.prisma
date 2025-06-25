@@ -4,11 +4,13 @@ generator client {
   // output   = "./../dist"
 }
 
+// DATABASE_URL="mysql://root:@localhost:3306/zbir"
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
+// ===[USER AND AUTHENTICATION MODELS]==============================================================
 enum UserRole {
   ROOT
   SYSTEM
@@ -19,6 +21,7 @@ enum UserRole {
 }
 
 enum UserRegion {
+  ALL
   DOLNOSLASKI
   GORNOSLASKI
   KUJAWSKO_POMORSKI
@@ -31,47 +34,54 @@ enum UserRegion {
   POLNOCNO_ZACHODNI
   STAROPOLSKI
   WIELKOPOLSKI
+  NONE
 }
 
 enum Gender {
   MALE
   FEMALE
-}
-
-enum NotificationType {
-  INFO
-  SYSTEM
-  INVITATION
+  OTHER
+  PREFER_NOT_TO_SAY
 }
 
 model User {
-  id                  String              @id @default(uuid())
-  name                String?
-  username            String?
-  email               String              @unique
-  emailVerified       DateTime?
-  image               String?
-  password            String              @db.Text
-  isActive            Boolean             @default(true)
-  isBlocked           Boolean             @default(false)
-  isEmailConfirmed    Boolean             @default(false)
-  twoFactorEnabled    Boolean             @default(false)
-  failedLoginAttempts Int                 @default(0)
-  lastLoginAt         DateTime?
-  role                UserRole            @default(USER)
-  accounts            Account[]
-  sessions            Session[]
-  Authenticator       Authenticator[]
-  campsOwning         Camp[]              @relation("campOwner")
-  createdEntries      FicoEntry[]         @relation("entryCreatedBy")
-  updatedEntries      FicoEntry[]         @relation("entryUpdatedBy")
-  userToCamps         UserToCamp[]
-  regionAccess        UserRegionAccess[]
-  personalData        PersonalData?
-  createdAt           DateTime            @default(now())
-  updatedAt           DateTime            @updatedAt
-  VerificationToken   VerificationToken[]
-  Notification        Notification[]
+  // Identity
+  id                   String              @id @default(uuid())
+  email                String              @unique
+  username             String?
+  name                 String?
+  // Authentication
+  password             String              @db.Text
+  emailVerified        DateTime?
+  isEmailConfirmed     Boolean             @default(false)
+  twoFactorEnabled     Boolean             @default(false)
+  failedLoginAttempts  Int                 @default(0)
+  image                String?
+  // Status and Roles
+  role                 UserRole            @default(USER)
+  isActive             Boolean             @default(true)
+  isBlocked            Boolean             @default(false)
+  regionAccess         UserRegion?         @default(NONE)
+  lastLoginAt          DateTime?
+  // Timestamps
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  // Auth Relations
+  accounts             Account[]
+  sessions             Session[]
+  Authenticator        Authenticator[]
+  VerificationToken    VerificationToken[]
+  // Personal Data Relation
+  personalData         PersonalData?
+  // Camp Participation and Ownership
+  userToCamps          UserToCamp[]
+  campsOwning          Camp[]              @relation("campOwner")
+  // Fico Entries
+  createdEntries       FicoEntry[]         @relation("entryCreatedBy")
+  updatedEntries       FicoEntry[]         @relation("entryUpdatedBy")
+  // Notifications
+  Notification         Notification[]
+  notificationsCreated Notification[]      @relation("notificationCreator")
 
   @@index([email])
   @@index([isActive, role])
@@ -79,21 +89,26 @@ model User {
 
 model PersonalData {
   id          String    @id @default(uuid())
-  userId      String    @unique
+  // Personal Information
   firstName   String?
   middleName  String?
   lastName    String?
+  birthDate   DateTime?
+  gender      Gender?
+  // Contact Information
   phoneNumber String?
   address     String?
   city        String?
   zipCode     String?
   country     String?
-  birthDate   DateTime?
+  // Permissions
   canUserEdit Boolean   @default(true)
-  gender      Gender?
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Timestamps
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  // User Relation
+  userId      String    @unique
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([firstName, lastName])
@@ -102,21 +117,25 @@ model PersonalData {
 
 model Account {
   id                       String   @id @default(uuid())
-  userId                   String
+  // Provider Identification
   type                     String
   provider                 String
   providerAccountId        String
+  // Token Information
+  id_token                 String?  @db.Text
   refresh_token            String?  @db.Text
   access_token             String?  @db.Text
   expires_at               Int?
   token_type               String?
   scope                    String?
-  id_token                 String?  @db.Text
   session_state            String?
   refresh_token_expires_in Int?
-  user                     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Timestamps
   createdAt                DateTime @default(now())
   updatedAt                DateTime @updatedAt
+  // User Relation
+  userId                   String
+  user                     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@index([userId])
@@ -124,14 +143,18 @@ model Account {
 
 model Session {
   id           String   @id @default(uuid())
+  // Session Identification
   sessionToken String   @unique
-  userId       String
+  // Metadata
   expires      DateTime
   ip           String?
   deviceInfo   String?
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Timestamps
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  // User Relation
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([ip])
@@ -145,68 +168,73 @@ enum VerificationTokenType {
 
 model VerificationToken {
   id         String                @id @default(uuid())
-  userId     String
-  user       User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Token Details
   type       VerificationTokenType
   identifier String?
   token      String                @unique
   expires    DateTime
+  // Timestamp
   createdAt  DateTime              @default(now())
+  // Token Ownership - User Relation
+  userId     String
+  user       User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, type])
 }
 
 model Authenticator {
+  // Composite Primary key
   credentialID         String  @unique
-  userId               String
   providerAccountId    String
+  // WebAuthn Credential Details
   credentialPublicKey  String
   counter              Int
   credentialDeviceType String
   credentialBackedUp   Boolean
   transports           String?
+  // User Relation
+  userId               String
   user                 User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, credentialID])
 }
 
-// ---------------- CAMP ----------------
-
+// ===[CAMP AND FINANCIAL MODELS]===================================================================
 model Camp {
-  id         String     @id @default(uuid())
-  name       String
-  year       Int
-  region     UserRegion
-  isClosed   Boolean    @default(false)
-  approvedAt DateTime?
-
-  // Podsumowania (dla PDF, kontroli, audytu)
-  incomeSum    Decimal @default("0.00") @db.Decimal(15, 2)
-  expenseSum   Decimal @default("0.00") @db.Decimal(15, 2)
-  balanceFinal Decimal @default("0.00") @db.Decimal(15, 2)
-
-  ownerId String
-  owner   User   @relation("campOwner", fields: [ownerId], references: [id])
-
+  id           String       @id @default(uuid())
+  // Details
+  name         String
+  year         Int
+  region       UserRegion
+  isClosed     Boolean      @default(false)
+  approvedAt   DateTime?
+  // Financial Summary
+  incomeSum    Decimal      @default("0.00") @db.Decimal(15, 2)
+  expenseSum   Decimal      @default("0.00") @db.Decimal(15, 2)
+  balanceFinal Decimal      @default("0.00") @db.Decimal(15, 2)
+  // Timestamps
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  // Ownership - User Relation
+  ownerId      String
+  owner        User         @relation("campOwner", fields: [ownerId], references: [id])
+  // Relations
   entries      FicoEntry[]
   participants UserToCamp[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
   @@index([year])
   @@index([region])
 }
 
 model FicoEntry {
-  id              String   @id @default(uuid())
-  ficoDate        DateTime
-  ficoDescription String
-
-  bankDeposit    Decimal? @db.Decimal(15, 2)
-  bankWithdrawal Decimal? @db.Decimal(15, 2)
-
-  // Wypłaty szczegółowe
+  id                   String   @id @default(uuid())
+  // Basic Details
+  ficoDate             DateTime
+  ficoDescription      String
+  // Bank Transactions
+  bankDeposit          Decimal? @db.Decimal(15, 2)
+  bankWithdrawal       Decimal? @db.Decimal(15, 2)
+  // Income Breakdown
   grantHq              Decimal? @db.Decimal(15, 2)
   grantEdu             Decimal? @db.Decimal(15, 2)
   grantMuni            Decimal? @db.Decimal(15, 2)
@@ -216,60 +244,56 @@ model FicoEntry {
   donationOrg          Decimal? @db.Decimal(15, 2)
   incomeOnePercent     Decimal? @db.Decimal(15, 2)
   incomeOther          Decimal? @db.Decimal(15, 2)
-
-  // Wydatki szczegółowe
-  expEquipment      Decimal? @db.Decimal(15, 2)
-  expMaterials      Decimal? @db.Decimal(15, 2)
-  expCleaning       Decimal? @db.Decimal(15, 2)
-  expOtherMaterials Decimal? @db.Decimal(15, 2)
-  expEnergy         Decimal? @db.Decimal(15, 2)
-  expPhone          Decimal? @db.Decimal(15, 2)
-  expRent           Decimal? @db.Decimal(15, 2)
-  expPost           Decimal? @db.Decimal(15, 2)
-  expBank           Decimal? @db.Decimal(15, 2)
-  expCourier        Decimal? @db.Decimal(15, 2)
-  expServices       Decimal? @db.Decimal(15, 2)
-  expSalary         Decimal? @db.Decimal(15, 2)
-  expInsuranceOC    Decimal? @db.Decimal(15, 2)
-  expInsuranceNNW   Decimal? @db.Decimal(15, 2)
-  expTravel         Decimal? @db.Decimal(15, 2)
-  expFood           Decimal? @db.Decimal(15, 2)
-  expRewards        Decimal? @db.Decimal(15, 2)
-  expTickets        Decimal? @db.Decimal(15, 2)
-  expAccommodation  Decimal? @db.Decimal(15, 2)
-  expTransport      Decimal? @db.Decimal(15, 2)
-  expOther          Decimal? @db.Decimal(15, 2)
-
+  // Expense Breakdown
+  expEquipment         Decimal? @db.Decimal(15, 2)
+  expMaterials         Decimal? @db.Decimal(15, 2)
+  expCleaning          Decimal? @db.Decimal(15, 2)
+  expOtherMaterials    Decimal? @db.Decimal(15, 2)
+  expEnergy            Decimal? @db.Decimal(15, 2)
+  expPhone             Decimal? @db.Decimal(15, 2)
+  expRent              Decimal? @db.Decimal(15, 2)
+  expPost              Decimal? @db.Decimal(15, 2)
+  expBank              Decimal? @db.Decimal(15, 2)
+  expCourier           Decimal? @db.Decimal(15, 2)
+  expServices          Decimal? @db.Decimal(15, 2)
+  expSalary            Decimal? @db.Decimal(15, 2)
+  expInsuranceOC       Decimal? @db.Decimal(15, 2)
+  expInsuranceNNW      Decimal? @db.Decimal(15, 2)
+  expTravel            Decimal? @db.Decimal(15, 2)
+  expFood              Decimal? @db.Decimal(15, 2)
+  expRewards           Decimal? @db.Decimal(15, 2)
+  expTickets           Decimal? @db.Decimal(15, 2)
+  expAccommodation     Decimal? @db.Decimal(15, 2)
+  expTransport         Decimal? @db.Decimal(15, 2)
+  expOther             Decimal? @db.Decimal(15, 2)
+  // Timestamps
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
   // Relacje
-  campId String
-  camp   Camp   @relation(fields: [campId], references: [id])
-
-  createdById String
-  updatedById String?
-
-  createdBy User  @relation("entryCreatedBy", fields: [createdById], references: [id])
-  updatedBy User? @relation("entryUpdatedBy", fields: [updatedById], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  campId               String
+  camp                 Camp     @relation(fields: [campId], references: [id])
+  createdById          String
+  createdBy            User     @relation("entryCreatedBy", fields: [createdById], references: [id])
+  updatedById          String?
+  updatedBy            User?    @relation("entryUpdatedBy", fields: [updatedById], references: [id])
 
   @@index([campId, ficoDate])
   @@index([campId])
 }
 
 model UserToCamp {
-  id String @id @default(uuid())
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  campId String
-  camp   Camp   @relation(fields: [campId], references: [id], onDelete: Cascade)
-
-  accepted Boolean @default(false)
-
+  // Composite Primary Key - User and Camp Relation
+  id           String         @id @default(uuid())
+  userId       String
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  campId       String
+  camp         Camp           @relation(fields: [campId], references: [id], onDelete: Cascade)
+  // Invitation state
+  accepted     Boolean        @default(false)
+  // Timestamps
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
+  // Notification relation
   Notification Notification[]
 
   @@unique([userId, campId])
@@ -277,39 +301,43 @@ model UserToCamp {
   @@index([campId])
 }
 
-model UserRegionAccess {
-  id     String     @id @default(uuid())
-  userId String
-  region UserRegion
+// ===[NOTIFICATIONS AND MESSAGES MODELS]===========================================================
+enum NotificationType {
+  INFO
+  SUCCESS
+  WARNING
+  ERROR
+  SYSTEM
+  INVITATION
+}
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([userId, region])
-  @@index([userId])
-  @@index([region])
+enum NotificationImportance {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
 }
 
 model Notification {
-  id String @id @default(uuid())
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+  // Composite Primary Key - User Relation
+  id           String                 @id @default(uuid())
+  userId       String
+  user         User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Optional relation to specific camp participation - Comp Relation
   userToCampId String?
-  userToCamp   UserToCamp? @relation(fields: [userToCampId], references: [id], onDelete: Cascade)
-
-  type    NotificationType
-  topic   String
-  content String           @db.Text
-
-  isRead    Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  userToCamp   UserToCamp?            @relation(fields: [userToCampId], references: [id], onDelete: Cascade)
+  // Optional creator (SYSTEM or USER) - User Relation
+  createdById  String?
+  createdBy    User?                  @relation("notificationCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  // Notification Details
+  type         NotificationType       @default(INFO)
+  importance   NotificationImportance @default(MEDIUM)
+  topic        String
+  content      String                 @db.Text
+  isRead       Boolean                @default(false)
+  // Timestamps
+  createdAt    DateTime               @default(now())
+  updatedAt    DateTime               @updatedAt
 
   @@index([userId, isRead])
 }
-
-// EOF

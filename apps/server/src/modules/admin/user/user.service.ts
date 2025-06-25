@@ -63,32 +63,23 @@ export class UserService {
   async changePassword(
     id: string,
     dto: PasswordChangeDto,
-    current: JwtRequestUser
+    current: JwtRequestUser,
   ): Promise<APIMessageResponse> {
     if (id !== dto.id) { throw new BadRequestException('Identyfikator użytkownika jest niezgodny.') }
-
-    if (id === current.id) { throw new ForbiddenException('Nie możesz zmienić własnego hasła jako administrator.') }
-
-    const user = await this.prisma.user.findUnique({
-      where: { id },
-      select: { password: true, email: true },
-    })
-
-    if (!user) throw new NotFoundException('Użytkownik nie istnieje.')
-
-    const isMatch = await argon2.verify(user.password, dto.currentPassword)
-    if (!isMatch) { throw new BadRequestException('Obecne hasło jest niepoprawne.') }
-
-    if (dto.currentPassword === dto.newPassword) { throw new BadRequestException('Nowe hasło nie może być takie samo jak obecne.') }
-
+    if (id === current.id) { throw new ForbiddenException('Zmień swoje hasło z DASHBOARD.') }
     const hashed = await argon2.hash(dto.newPassword)
 
-    await this.prisma.user.update({
-      where: { id },
-      data: { password: hashed },
-    })
+    try {
+      const updated = await this.prisma.user.update({
+        where: { id },
+        data: { password: hashed },
+        select: { email: true },
+      })
 
-    return { message: `Hasło dla użytkownika ${user.email} zostało zmienione.` }
+      return { message: `Hasło użytkownika ${updated.email} zostało pomyślnie zmienione.`, }
+    } catch {
+      throw new NotFoundException('Użytkownik nie istnieje.')
+    }
   }
 
   async createUser(dto: CreateUserDto, current: JwtRequestUser): Promise<APIMessageResponse> {

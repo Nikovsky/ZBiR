@@ -15,6 +15,7 @@ export interface AdminPanelUserDto {
   failedLoginAttempts: number
   lastLoginAt: Date | null
   role: UserRole
+  // regionAccess: UserRegion | null // TODO: Add region access if needed
   createdAt: Date
   updatedAt: Date
 }
@@ -103,8 +104,6 @@ export interface AdminPanelEditUserWithPersonalDataDto extends AdminPanelEditUse
 
 export interface AdminPanelPasswordChangeDto {
   id: string
-  email: string
-  currentPassword: string
   newPassword: string
 }
 
