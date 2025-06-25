@@ -2,10 +2,12 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "declarationDir": "./dist/types",
     "rootDir": "./src",
     "composite": true,
     "declaration": true,
+    "removeComments": true,
+    "target": "ES2021",
+    "module": "commonjs",
     "lib": [
       "ES2021"
     ]

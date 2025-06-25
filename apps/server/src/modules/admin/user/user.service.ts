@@ -3,8 +3,8 @@ import { Injectable, BadRequestException, ForbiddenException, NotFoundException 
 import { PrismaService } from '@zbir/database'
 import { CreateUserDto, EditUserWithPersonalDataDto, PasswordChangeDto, EditUserDto, EditPersonalDataDto, UserQueryDto } from './user.dto'
 import { JwtRequestUser } from '@/interfaces/jwt-request-user.interface'
-import { UserRole, Gender } from '@zbir/types'
-import { User, PersonalData, Prisma } from '@prisma/client'
+import { Gender, UserRole } from '@zbir/types'
+import { User, PersonalData, Prisma, UserRole as PUserRole } from '@prisma/client'
 import { APIMessageResponse, DEFAULT_PAGINATION_LIMIT, AdminPanelUserDto, AdminPanelUserWithPersonalDataDto, PaginationQuery, AdminPanelUserSortFields, SortDirection, PaginationResponse, AdminPanelPersonalDataDto } from '@zbir/types'
 import * as argon2 from 'argon2'
 
@@ -279,12 +279,12 @@ export class UserService {
 
   private isRoleHigher(target: UserRole, current: UserRole): boolean {
     const priority: Record<UserRole, number> = {
-      GUEST: 0,
       USER: 1,
-      MODERATOR: 2,
-      ADMIN: 3,
-      SYSTEM: 4,
-      ROOT: 5,
+      SKARBNIK: 2,
+      SKARBNIK_REGION: 3,
+      ADMIN: 4,
+      SYSTEM: 5,
+      ROOT: 6,
     }
     return priority[target] >= priority[current]
   }

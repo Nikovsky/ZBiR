@@ -2,9 +2,9 @@
   "name": "@zbir/database",
   "version": "1.0.0",
   "main": "dist/index.js",
-  "types": "dist/types/index.d.ts",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "db:build": "tsc",
+    "db:build": "tsc --build --force",
     "dev": "tsc --watch",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev --skip-generate",

@@ -1,5 +1,5 @@
 // @file: server/src/interfaces/auth.interface.ts
-import { UserRole } from '@zbir/database'
+import { UserRole } from '@prisma/client'
 
 export interface TokenPair {
   accessToken: string

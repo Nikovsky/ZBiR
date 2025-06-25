@@ -12,7 +12,7 @@ import { PublicUserAccountDto, APIMessageResponse } from '@zbir/types';
 
 @Controller('user/dashboard')
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles(UserRole.USER, UserRole.MODERATOR, UserRole.ADMIN, UserRole.ROOT)
+@Roles(UserRole.USER, UserRole.SKARBNIK, UserRole.SKARBNIK_REGION, UserRole.ADMIN, UserRole.ROOT)
 export class DashboardController {
   constructor(private readonly dashboardService: DashboardService) { }
 

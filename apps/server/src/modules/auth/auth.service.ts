@@ -1,12 +1,13 @@
 // @file: server/src/modules/auth/auth.service.ts
 import { Injectable, ConflictException, Logger, UnauthorizedException, BadRequestException, NotFoundException } from '@nestjs/common';
-import { PrismaService, UserRole } from '@zbir/database';
+import { PrismaService } from '@zbir/database';
 import { RegisterDto, LoginDto } from './auth.dto';
 import { ConfigService } from '@nestjs/config'
 import { ServerConfig } from '@/config/server.type';
 import { JwtService } from '@nestjs/jwt'
 import { AuthResponse } from '@/interfaces/auth.interface';
 import { Request, Response } from 'express';
+import { UserRole } from '@prisma/client';
 import { v4 as uuid } from 'uuid'
 import * as argon2 from 'argon2';
 

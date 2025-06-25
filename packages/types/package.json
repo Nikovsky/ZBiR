@@ -2,9 +2,9 @@
   "name": "@zbir/types",
   "version": "1.0.0",
   "main": "dist/index.js",
-  "types": "dist/types/index.d.ts",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "types:build": "tsc",
+    "types:build": "tsc --build --force",
     "dev": "tsc --watch"
   },
   "private": true,
