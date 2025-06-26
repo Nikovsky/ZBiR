@@ -1,6 +1,6 @@
 // @file: client/src/app/[locale]/admin/user/userForm.schema.ts
 import { z } from 'zod'
-import { UserRole } from '@zbir/types'
+import { UserRole, UserRegion } from '@zbir/types'
 
 export const userFormSchema = z
   .object({
@@ -10,6 +10,7 @@ export const userFormSchema = z
     password: z.string().min(8, 'Hasło musi mieć co najmniej 8 znaków'),
     confirmPassword: z.string().min(8, 'Powtórz hasło'),
     role: z.nativeEnum(UserRole, { required_error: 'Wybierz rolę' }),
+    regionAccess: z.nativeEnum(UserRegion, { required_error: 'Wybierz region dostępu' }),
     isActive: z.boolean(),
     isBlocked: z.boolean(),
     isEmailConfirmed: z.boolean(),

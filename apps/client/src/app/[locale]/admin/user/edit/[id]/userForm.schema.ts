@@ -1,6 +1,6 @@
 // @file: client/src/app/[locale]/admin/user/userForm.schema.ts
 import { z } from 'zod'
-import { UserRole, Gender } from '@zbir/types'
+import { UserRole, Gender, UserRegion } from '@zbir/types'
 
 /**
  * Formularz edycji / tworzenia użytkownika (dane konta i personalne)
@@ -18,6 +18,7 @@ export const editUserFormSchema = z
     isEmailConfirmed: z.boolean(),
     twoFactorEnabled: z.boolean(),
     role: z.nativeEnum(UserRole),
+    regionAccess: z.nativeEnum(UserRegion),
 
     // Personal Data
     personalData: z

@@ -1,5 +1,5 @@
 // @file: packages/types/src/user-dashboard.ts
-import { Gender, UserRole } from './user'
+import { Gender, UserRole, UserRegion } from './user'
 
 export interface PublicPersonalData {
   firstName: string | null
@@ -21,6 +21,7 @@ export interface PublicAccountData {
   name: string | null
   image: string | null
   role: UserRole
+  regionAccess: UserRegion | null
   lastLoginAt: Date | null
 }
 

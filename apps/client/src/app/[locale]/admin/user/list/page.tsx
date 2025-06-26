@@ -85,6 +85,12 @@ export default function AdminUserListPage() {
     },
     { field: 'role', label: 'Rola', sortable: true },
     {
+      field: 'regionAccess',
+      label: 'Region',
+      sortable: true,
+      render: (row: AdminPanelUserDto) => row.regionAccess || '-',
+    },
+    {
       field: 'isActive',
       label: 'Status',
       render: (row: AdminPanelUserDto) => row.isActive && !row.isBlocked

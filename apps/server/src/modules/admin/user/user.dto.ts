@@ -1,5 +1,5 @@
 // @file: server/src/modules/admin/user/user.dto.ts
-import { UserRole, Gender, AdminPanelEditUserDto, AdminPanelEditPersonalDataDto, AdminPanelEditUserWithPersonalDataDto, AdminPanelCreateUserDto, AdminPanelUserSortFields, AdminPanelPasswordChangeDto } from '@zbir/types';
+import { UserRole, Gender, UserRegion, AdminPanelEditUserDto, AdminPanelEditPersonalDataDto, AdminPanelEditUserWithPersonalDataDto, AdminPanelCreateUserDto, AdminPanelUserSortFields, AdminPanelPasswordChangeDto } from '@zbir/types';
 import { IsEmail, IsBoolean, IsOptional, IsString, MinLength, ValidateNested, IsUUID, IsDate, IsEnum } from 'class-validator'
 import { Type } from 'class-transformer'
 import { PaginationQueryDto } from '@/dto/pagination-query.dto'
@@ -14,6 +14,7 @@ export class CreateUserDto implements AdminPanelCreateUserDto {
   @IsEmail() email: string
   @IsString() @MinLength(8) password: string
   @IsEnum(UserRole) role: UserRole
+  @IsOptional() @IsEnum(UserRegion) regionAccess?: UserRegion;
   @IsOptional() @IsBoolean() isActive?: boolean
   @IsOptional() @IsBoolean() isBlocked?: boolean
   @IsOptional() @IsBoolean() isEmailConfirmed?: boolean
@@ -32,6 +33,7 @@ export class EditUserDto implements AdminPanelEditUserDto {
   @IsBoolean() isEmailConfirmed: boolean;
   @IsBoolean() twoFactorEnabled: boolean;
   @IsEnum(UserRole) role: UserRole;
+  @IsOptional() @IsEnum(UserRegion) regionAccess?: UserRegion;
 }
 
 export class EditPersonalDataDto implements AdminPanelEditPersonalDataDto {

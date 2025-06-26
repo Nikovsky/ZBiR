@@ -16,7 +16,8 @@ import {
   AdminPanelPasswordChangeDto,
   AdminPanelUserWithPersonalDataDto,
   UserRole,
-  Gender
+  Gender,
+  UserRegion
 } from '@zbir/types'
 import {
   editUserFormSchema,
@@ -80,6 +81,7 @@ export default function AdminUserEditPage() {
       isEmailConfirmed: data.isEmailConfirmed,
       twoFactorEnabled: data.twoFactorEnabled,
       role: data.role,
+      regionAccess: data.regionAccess,
       personalData: data.personalData
         ? {
           ...data.personalData,
@@ -169,6 +171,16 @@ export default function AdminUserEditPage() {
                 </select>
               )
             },
+            {
+              label: 'Region',
+              content: (
+                <select {...userForm.register('regionAccess')} className="select select-sm select-bordered w-full">
+                  {Object.values(UserRegion).map((region) => (
+                    <option key={region} value={region}>{region}</option>
+                  ))}
+                </select>
+              )
+            },
             { label: 'Aktywny', content: <input type="checkbox" {...userForm.register('isActive')} /> },
             { label: 'Zablokowany', content: <input type="checkbox" {...userForm.register('isBlocked')} /> },
             { label: 'Email potwierdzony', content: <input type="checkbox" {...userForm.register('isEmailConfirmed')} /> },
@@ -189,9 +201,9 @@ export default function AdminUserEditPage() {
               label: 'Płeć',
               content: (
                 <select {...userForm.register('personalData.gender')} className="select select-sm select-bordered w-full">
-                  <option value="MALE">Mężczyzna</option>
-                  <option value="FEMALE">Kobieta</option>
-                  <option value="OTHER">Inna</option>
+                  {Object.values(Gender).map((gender) => (
+                    <option key={gender} value={gender}>{gender}</option>
+                  ))}
                 </select>
               )
             }

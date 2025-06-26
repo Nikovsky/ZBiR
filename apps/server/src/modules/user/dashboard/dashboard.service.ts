@@ -2,7 +2,7 @@
 import { Injectable, BadRequestException, ForbiddenException } from '@nestjs/common';
 import { PrismaService, } from '@zbir/database';
 import * as argon2 from 'argon2';
-import { PublicUserAccountDto, UserRole, Gender, APIMessageResponse } from '@zbir/types';
+import { PublicUserAccountDto, UserRole, Gender, APIMessageResponse, UserRegion } from '@zbir/types';
 import { UpdateUserDashboardDto } from './dashboard.dto';
 
 @Injectable()
@@ -21,6 +21,7 @@ export class DashboardService {
       username: user.username,
       name: user.name,
       role: user.role as UserRole,
+      regionAccess: user.regionAccess as UserRegion,
       image: user.image,
       lastLoginAt: user.lastLoginAt,
       personalData: user.personalData

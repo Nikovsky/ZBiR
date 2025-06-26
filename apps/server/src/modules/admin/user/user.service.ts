@@ -3,8 +3,8 @@ import { Injectable, BadRequestException, ForbiddenException, NotFoundException 
 import { PrismaService } from '@zbir/database'
 import { CreateUserDto, EditUserWithPersonalDataDto, PasswordChangeDto, EditUserDto, EditPersonalDataDto, UserQueryDto } from './user.dto'
 import { JwtRequestUser } from '@/interfaces/jwt-request-user.interface'
-import { Gender, UserRole } from '@zbir/types'
-import { User, PersonalData, Prisma, UserRole as PUserRole } from '@prisma/client'
+import { Gender, UserRole, UserRegion } from '@zbir/types'
+import { User, PersonalData, Prisma } from '@prisma/client'
 import { APIMessageResponse, DEFAULT_PAGINATION_LIMIT, AdminPanelUserDto, AdminPanelUserWithPersonalDataDto, PaginationQuery, AdminPanelUserSortFields, SortDirection, PaginationResponse, AdminPanelPersonalDataDto } from '@zbir/types'
 import * as argon2 from 'argon2'
 
@@ -59,7 +59,6 @@ export class UserService {
     }
   }
 
-
   async changePassword(
     id: string,
     dto: PasswordChangeDto,
@@ -96,6 +95,7 @@ export class UserService {
         username: dto.username ?? '',
         name: dto.name ?? '',
         role: dto.role ?? UserRole.USER,
+        regionAccess: dto.regionAccess ?? UserRegion.NONE,
         isActive: dto.isActive ?? true,
         isBlocked: dto.isBlocked ?? false,
         isEmailConfirmed: dto.isEmailConfirmed ?? false,
@@ -108,7 +108,6 @@ export class UserService {
 
     return { message: `Użytkownik ${created.email} został utworzony.` }
   }
-
 
   async blockUser(id: string, current: JwtRequestUser): Promise<APIMessageResponse> {
     if (id === current.id) { throw new ForbiddenException('Nie możesz zablokować samego siebie.') }
@@ -199,11 +198,11 @@ export class UserService {
         isEmailConfirmed: dto.isEmailConfirmed,
         twoFactorEnabled: dto.twoFactorEnabled,
         role: dto.role,
+        regionAccess: dto.regionAccess,
         updatedAt: new Date(),
       },
     })
   }
-
 
   private async updatePersonalDataTx(
     userId: string,
@@ -226,9 +225,6 @@ export class UserService {
     })
   }
 
-
-
-
   private toUserDto(user: User): AdminPanelUserDto {
     return {
       id: user.id,
@@ -243,6 +239,7 @@ export class UserService {
       failedLoginAttempts: user.failedLoginAttempts,
       lastLoginAt: user.lastLoginAt,
       role: user.role as UserRole,
+      regionAccess: user.regionAccess as UserRegion,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt
     }
@@ -279,7 +276,4 @@ export class UserService {
     }
     return priority[target] >= priority[current]
   }
-
-
 }
-

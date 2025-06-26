@@ -44,6 +44,18 @@ nest g module modules/admin/user
 nest g controller modules/admin/user
 nest g service modules/admin/user
 nest g class modules/admin/user/user.dto --flat
+
+# camp
+nest g module modules/camp
+nest g controller modules/camp
+nest g service modules/camp
+nest g class modules/camp/camp.dto --flat
+
+# camp
+nest g module modules/fico
+nest g controller modules/fico
+nest g service modules/fico
+nest g class modules/fico/fico.dto --flat
 ```
 
 ## THROTTLER TEST via PowerShell

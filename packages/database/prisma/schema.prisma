@@ -40,7 +40,6 @@ enum UserRegion {
 enum Gender {
   MALE
   FEMALE
-  OTHER
   PREFER_NOT_TO_SAY
 }
 
@@ -94,7 +93,7 @@ model PersonalData {
   middleName  String?
   lastName    String?
   birthDate   DateTime?
-  gender      Gender?
+  gender      Gender?   @default(PREFER_NOT_TO_SAY)
   // Contact Information
   phoneNumber String?
   address     String?
@@ -144,7 +143,7 @@ model Account {
 model Session {
   id           String   @id @default(uuid())
   // Session Identification
-  sessionToken String   @unique
+  sessionToken String   @db.Text
   // Metadata
   expires      DateTime
   ip           String?

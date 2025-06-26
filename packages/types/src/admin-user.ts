@@ -1,5 +1,5 @@
 // @file: packages/types/src/admin-user.ts
-import { UserRole, Gender } from './user';
+import { UserRole, Gender, UserRegion } from './user';
 
 // SERVER >>> CLIENT --- GET
 export interface AdminPanelUserDto {
@@ -15,7 +15,7 @@ export interface AdminPanelUserDto {
   failedLoginAttempts: number
   lastLoginAt: Date | null
   role: UserRole
-  // regionAccess: UserRegion | null // TODO: Add region access if needed
+  regionAccess?: UserRegion
   createdAt: Date
   updatedAt: Date
 }
@@ -53,7 +53,8 @@ export enum AdminPanelUserSortFields {
   CREATED_AT = 'createdAt',
   UPDATED_AT = 'updatedAt',
   IS_ACTIVE = 'isActive',
-  IS_BLOCKED = 'isBlocked'
+  IS_BLOCKED = 'isBlocked',
+  REGION_ACCESS = 'regionAccess'
 }
 
 // CLIENT >>> SERVER --- POST/PATCH/PUT/DELETE
@@ -63,6 +64,7 @@ export interface AdminPanelCreateUserDto {
   email: string
   password: string
   role: UserRole
+  regionAccess?: UserRegion
   isActive?: boolean
   isBlocked?: boolean
   isEmailConfirmed?: boolean
@@ -81,6 +83,7 @@ export interface AdminPanelEditUserDto {
   isEmailConfirmed?: boolean
   twoFactorEnabled?: boolean
   role: UserRole
+  regionAccess?: UserRegion
 }
 
 export interface AdminPanelEditPersonalDataDto {

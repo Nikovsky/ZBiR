@@ -9,3 +9,4 @@ export { AdminPanelUserDto, AdminPanelPersonalDataDto, AdminPanelUserWithPersona
 export { AccessPreset, AccessMap } from "./rbac";
 export { CampPanelDto, CampPanelExtendedDto, CampPanelParticipantDto, CampPanelSortFields, CampPanelCreateDto, CampPanelEditDto, CampParticipantAddDto, CampParticipantAcceptDto, CampParticipantRemoveDto } from './camp-panel';
 export { FicoPanelEntryListDto, FicoPanelEntryDetailsDto, FicoPanelEntryCreateDto, FicoPanelEntryUpdateDto, FicoPanelEntryDeleteDto, FicoMoneyValue } from './fico-panel';
+export { InboxNotificationDto, InboxNotificationImportance, InboxNotificationType, SendInboxNotificationDto, MarkInboxNotificationReadDto } from './notification-inbox';

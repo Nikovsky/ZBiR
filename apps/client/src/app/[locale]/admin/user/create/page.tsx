@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { createUser } from '@/lib/api/admin-user.api'
 import { userFormSchema, UserFormData } from './userForm.schema'
-import { UserRole } from '@zbir/types'
+import { UserRole, UserRegion } from '@zbir/types'
 import KeyValueTable from '@/components/ui/KeyValueTable'
 import { notify } from '@/store/notification.zustand'
 
@@ -22,6 +22,7 @@ export default function AdminUserCreatePage() {
       password: '',
       confirmPassword: '',
       role: UserRole.USER,
+      regionAccess: UserRegion.NONE,
       isActive: true,
       isBlocked: false,
       isEmailConfirmed: true,
@@ -102,6 +103,16 @@ export default function AdminUserCreatePage() {
                 <select {...register('role')} className="select select-sm select-bordered w-full">
                   {Object.values(UserRole).map((role) => (
                     <option key={role} value={role}>{role}</option>
+                  ))}
+                </select>
+              ),
+            },
+            {
+              label: 'Region dostępu',
+              content: (
+                <select {...register('regionAccess')} className="select select-sm select-bordered w-full">
+                  {Object.values(UserRegion).map((region) => (
+                    <option key={region} value={region}>{region}</option>
                   ))}
                 </select>
               ),

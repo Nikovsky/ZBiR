@@ -92,7 +92,7 @@ export default function DashboardPage() {
         <option value="">—</option>
         <option value={Gender.MALE}>Mężczyzna</option>
         <option value={Gender.FEMALE}>Kobieta</option>
-        <option value={Gender.OTHER}>Inna</option>
+        <option value={Gender.PREFER_NOT_TO_SAY}>Inna</option>
       </select>
     ) : (
       <span>{selected ?? '—'}</span>
@@ -105,6 +105,7 @@ export default function DashboardPage() {
     { label: 'Email', content: data.email },
     { label: 'ID', content: data.id },
     { label: 'Rola', content: data.role },
+    { label: 'Region', content: data.regionAccess ?? '-' },
     { label: 'Ostatnie logowanie', content: data.lastLoginAt ? new Date(data.lastLoginAt).toLocaleString() : '—' },
     { label: 'Nazwa użytkownika', content: renderField('username', data.username) },
     { label: 'Nazwa wyświetlana', content: renderField('name', data.name) },

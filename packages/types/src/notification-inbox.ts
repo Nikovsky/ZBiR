@@ -1,6 +1,6 @@
 // @file: packages/types/src/notification-inbox.ts
 
-export enum NotificationType {
+export enum InboxNotificationType {
   INFO = "INFO",
   SUCCESS = "SUCCESS",
   WARNING = "WARNING",
@@ -9,7 +9,7 @@ export enum NotificationType {
   INVITATION = "INVITATION",
 }
 
-export enum NotificationImportance {
+export enum InboxNotificationImportance {
   LOW = "LOW",
   MEDIUM = "MEDIUM",
   HIGH = "HIGH",
@@ -19,8 +19,8 @@ export enum NotificationImportance {
 // SERVER >>> CLIENT --- GET
 export interface InboxNotificationDto {
   id: string
-  type: NotificationType
-  importance: NotificationImportance
+  type: InboxNotificationType
+  importance: InboxNotificationImportance
   topic: string
   content: string
   isRead: boolean
@@ -35,16 +35,16 @@ export interface InboxNotificationDto {
 }
 
 // CLIENT >>> SERVER --- POST/PATCH/PUT/DELETE
-export interface SendNotificationDto {
+export interface SendInboxNotificationDto {
   userId: string
-  type: NotificationType
-  importance?: NotificationImportance
+  type: InboxNotificationType
+  importance?: InboxNotificationImportance
   topic: string
   content: string
   userToCampId?: string
 }
 
-export interface MarkNotificationReadDto {
+export interface MarkInboxNotificationReadDto {
   id: string
   isRead: boolean
 }
