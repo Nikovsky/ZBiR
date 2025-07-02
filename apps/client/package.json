@@ -10,9 +10,9 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
-    "@zbir/types": "*",
     "@tanstack/react-query": "^5.80.7",
     "@tanstack/react-table": "^8.21.3",
+    "@zbir/types": "*",
     "axios": "^1.10.0",
     "clsx": "^2.1.1",
     "next": "15.3.3",
@@ -26,11 +26,11 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@zbir/types": "*",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@zbir/types": "*",
     "eslint": "^9",
     "eslint-config-next": "15.3.3",
     "tailwindcss": "^4",

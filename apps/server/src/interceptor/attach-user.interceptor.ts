@@ -21,6 +21,7 @@ export class AttachUserInterceptor implements NestInterceptor {
             email: user.email,
             username: user.username,
             role: user.role,
+            regionAccess: user.regionAccess,
             exp: user.exp,
           }
           : undefined,

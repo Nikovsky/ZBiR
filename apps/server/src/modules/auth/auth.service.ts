@@ -7,7 +7,7 @@ import { ServerConfig } from '@/config/server.type';
 import { JwtService } from '@nestjs/jwt'
 import { AuthResponse } from '@/interfaces/auth.interface';
 import { Request, Response } from 'express';
-import { UserRole } from '@prisma/client';
+import { UserRegion, UserRole } from '@prisma/client';
 import { v4 as uuid } from 'uuid'
 import * as argon2 from 'argon2';
 
@@ -58,19 +58,20 @@ export class AuthService {
       data: { lastLoginAt: new Date() },
     })
 
-    return this.generateTokensAndSession(user.id, user.email, user.role, req)
+    return this.generateTokensAndSession(user.id, user.email, user.role, user.regionAccess, req)
   }
 
   private async generateTokensAndSession(
     userId: string,
     email: string,
     role: UserRole,
+    regionAccess: UserRegion,
     req: Request,
   ): Promise<AuthResponse> {
     const sessionId = uuid()
 
     const accessToken = await this.jwt.signAsync(
-      { sub: userId, email, role, sid: sessionId },
+      { sub: userId, email, role, regionAccess, sid: sessionId },
       {
         secret: this.config.get<ServerConfig>('server').accessToken.secret,
         expiresIn: this.config.get<ServerConfig>('server').accessToken.expiresInSec,
@@ -101,7 +102,7 @@ export class AuthService {
     })
 
     return {
-      user: { id: userId, email, role },
+      user: { id: userId, email, regionAccess, role },
       tokens: { accessToken, refreshToken },
     }
   }
@@ -219,6 +220,7 @@ export class AuthService {
         id: session.user.id,
         email: session.user.email,
         role: session.user.role,
+        regionAccess: session.user.regionAccess
       },
       tokens: {
         accessToken,

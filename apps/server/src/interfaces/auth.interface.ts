@@ -1,5 +1,5 @@
 // @file: server/src/interfaces/auth.interface.ts
-import { UserRole } from '@prisma/client'
+import { UserRegion, UserRole } from '@prisma/client'
 
 export interface TokenPair {
   accessToken: string
@@ -10,6 +10,7 @@ export interface AuthResponse {
     id: string
     email: string
     role: UserRole
+    regionAccess: UserRegion
   }
   tokens: TokenPair
 }

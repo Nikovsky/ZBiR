@@ -69,9 +69,6 @@ export interface CampPanelEditDto {
   region: UserRegion
   isClosed: boolean
   approvedAt: Date | null
-  incomeSum: number | string
-  expenseSum: number | string
-  balanceFinal: number | string
   ownerId: string
 }
 

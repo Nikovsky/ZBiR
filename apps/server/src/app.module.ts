@@ -11,6 +11,7 @@ import { ServerConfig } from './config/server.type';
 import { DashboardModule } from './modules/user/dashboard/dashboard.module';
 import { SessionModule } from './modules/admin/session/session.module';
 import { UserModule } from './modules/admin/user/user.module';
+import { CampModule } from './modules/camp/camp.module';
 import serverConfig from './config/server.config';
 @Module({
   imports: [
@@ -36,7 +37,8 @@ import serverConfig from './config/server.config';
     }),
     DashboardModule,
     SessionModule,
-    UserModule
+    UserModule,
+    CampModule
   ],
   controllers: [AppController],
   providers: [

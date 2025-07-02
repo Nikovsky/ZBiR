@@ -5,11 +5,13 @@ import { PassportStrategy } from '@nestjs/passport'
 import { ExtractJwt, Strategy } from 'passport-jwt'
 import { ConfigService } from '@nestjs/config'
 import { ServerConfig } from '@/config/server.type'
+import { UserRegion } from '@zbir/types'
 
 type JwtPayload = {
   sub: string
   email: string
   role: string
+  regionAccess: UserRegion
   exp: number
 }
 
@@ -30,6 +32,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       id: payload.sub,
       email: payload.email,
       role: payload.role,
+      regionAccess: payload.regionAccess,
       exp: payload.exp,
     }
   }

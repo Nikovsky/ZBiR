@@ -1,3 +1,4 @@
+// @file: client/src/app/api/admin/user/[id]/password/route.ts
 import { proxyHandler } from '@/lib/api/proxyHandler'
 import { NextRequest } from 'next/server'
 
