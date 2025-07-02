@@ -73,11 +73,8 @@ model User {
   // Personal Data Relation
   personalData         PersonalData?
   // Camp Participation and Ownership
-  userToCamps          UserToCamp[]
-  campsOwning          Camp[]              @relation("campOwner")
-  // Fico Entries
-  createdEntries       FicoEntry[]         @relation("entryCreatedBy")
-  updatedEntries       FicoEntry[]         @relation("entryUpdatedBy")
+  userToBooks          UserToBook[]
+  BookOwning          FicoBook[]              @relation("bookOwner")
   // Notifications
   Notification         Notification[]
   notificationsCreated Notification[]      @relation("notificationCreator")
@@ -197,96 +194,89 @@ model Authenticator {
 
   @@id([userId, credentialID])
 }
+// ===[Fico]==========================================================================================
 
-// ===[CAMP AND FINANCIAL MODELS]===================================================================
-model Camp {
-  id           String       @id @default(uuid())
-  // Details
-  name         String
-  year         Int
-  region       UserRegion
-  isClosed     Boolean      @default(false)
-  approvedAt   DateTime?
-  // Financial Summary
-  incomeSum    Decimal      @default("0.00") @db.Decimal(15, 2)
-  expenseSum   Decimal      @default("0.00") @db.Decimal(15, 2)
-  balanceFinal Decimal      @default("0.00") @db.Decimal(15, 2)
-  // Timestamps
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
-  // Ownership - User Relation
-  ownerId      String
-  owner        User         @relation("campOwner", fields: [ownerId], references: [id])
-  // Relations
-  entries      FicoEntry[]
-  participants UserToCamp[]
-
-  @@index([year])
-  @@index([region])
+enum FicoEntryType {
+  INCOME
+  EXPENSE
 }
 
-model FicoEntry {
-  id                   String   @id @default(uuid())
+model FicoBook {
+  id          String    @id @default(uuid())
   // Basic Details
-  ficoDate             DateTime
-  ficoDescription      String
-  // Bank Transactions
-  bankDeposit          Decimal? @db.Decimal(15, 2)
-  bankWithdrawal       Decimal? @db.Decimal(15, 2)
-  // Income Breakdown
-  grantHq              Decimal? @db.Decimal(15, 2)
-  grantEdu             Decimal? @db.Decimal(15, 2)
-  grantMuni            Decimal? @db.Decimal(15, 2)
-  incomeActions        Decimal? @db.Decimal(15, 2)
-  incomeParticipantFee Decimal? @db.Decimal(15, 2)
-  donationPrivate      Decimal? @db.Decimal(15, 2)
-  donationOrg          Decimal? @db.Decimal(15, 2)
-  incomeOnePercent     Decimal? @db.Decimal(15, 2)
-  incomeOther          Decimal? @db.Decimal(15, 2)
-  // Expense Breakdown
-  expEquipment         Decimal? @db.Decimal(15, 2)
-  expMaterials         Decimal? @db.Decimal(15, 2)
-  expCleaning          Decimal? @db.Decimal(15, 2)
-  expOtherMaterials    Decimal? @db.Decimal(15, 2)
-  expEnergy            Decimal? @db.Decimal(15, 2)
-  expPhone             Decimal? @db.Decimal(15, 2)
-  expRent              Decimal? @db.Decimal(15, 2)
-  expPost              Decimal? @db.Decimal(15, 2)
-  expBank              Decimal? @db.Decimal(15, 2)
-  expCourier           Decimal? @db.Decimal(15, 2)
-  expServices          Decimal? @db.Decimal(15, 2)
-  expSalary            Decimal? @db.Decimal(15, 2)
-  expInsuranceOC       Decimal? @db.Decimal(15, 2)
-  expInsuranceNNW      Decimal? @db.Decimal(15, 2)
-  expTravel            Decimal? @db.Decimal(15, 2)
-  expFood              Decimal? @db.Decimal(15, 2)
-  expRewards           Decimal? @db.Decimal(15, 2)
-  expTickets           Decimal? @db.Decimal(15, 2)
-  expAccommodation     Decimal? @db.Decimal(15, 2)
-  expTransport         Decimal? @db.Decimal(15, 2)
-  expOther             Decimal? @db.Decimal(15, 2)
+  name        String
+  description String?   @db.Text()
+  region      UserRegion
+  openedAt    DateTime
+  closedAt    DateTime?
+  approvedAt DateTime?
+  isClosed    Boolean   @default(false)
+  // Financial Summary
+  incomeSum   Decimal   @default("0.00") @db.Decimal(15, 2)
+  expenseSum  Decimal   @default("0.00") @db.Decimal(15, 2)
+  balanceSum  Decimal   @default("0.00") @db.Decimal(15, 2)
+  // Relations
+  ownerId      String
+  owner        User         @relation("bookOwner", fields: [ownerId], references: [id])
+  pages       FicoPage[]
+  ficoCategories FicoCategory[]
+  userToBooks UserToBook[]
   // Timestamps
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
-  // Relacje
-  campId               String
-  camp                 Camp     @relation(fields: [campId], references: [id])
-  createdById          String
-  createdBy            User     @relation("entryCreatedBy", fields: [createdById], references: [id])
-  updatedById          String?
-  updatedBy            User?    @relation("entryUpdatedBy", fields: [updatedById], references: [id])
 
-  @@index([campId, ficoDate])
-  @@index([campId])
+  @@index([openedAt, closedAt])
+  @@index([region])
 }
 
-model UserToCamp {
+model FicoPage {
+  id String @id @default(uuid())
+  // Basic Details
+  name String @db.Text()
+  invoiceNumber String
+  timestamp DateTime
+  type FicoEntryType
+  value Decimal @default("0.00") @db.Decimal(15, 2)
+  // Relations
+  ficoBook FicoBook @relation(fields: [ficoBookId], references: [id])
+  ficoBookId String
+  entries FicoEntry[]
+  // Timestamps
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model FicoEntry {
+  id String @id @default(uuid())
+  // Basic Details
+  amount Decimal @db.Decimal(15, 2) @default(0.00)
+  // Relations
+  FicoPage   FicoPage @relation(fields: [FicoPageId], references: [id])
+  FicoPageId String
+  FicoCategory FicoCategory @relation(fields: [FicoCategoryId], references: [id])
+  FicoCategoryId String
+}
+
+model FicoCategory {
+  id String @id @default(uuid())
+  name String
+  type FicoEntryType
+  isCustom Boolean @default(true)
+  ficoEntries FicoEntry[]
+  ficoBook FicoBook? @relation(fields: [ficoBookId], references: [id], onDelete: Cascade)
+  ficoBookId String?
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserToBook {
   // Composite Primary Key - User and Camp Relation
   id           String         @id @default(uuid())
   userId       String
   user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  campId       String
-  camp         Camp           @relation(fields: [campId], references: [id], onDelete: Cascade)
+  FicoBookId       String
+  FicoBook         FicoBook           @relation(fields: [FicoBookId], references: [id], onDelete: Cascade)
   // Invitation state
   accepted     Boolean        @default(false)
   // Timestamps
@@ -295,9 +285,9 @@ model UserToCamp {
   // Notification relation
   Notification Notification[]
 
-  @@unique([userId, campId])
+  @@unique([userId, FicoBookId])
   @@index([userId])
-  @@index([campId])
+  @@index([FicoBookId])
 }
 
 // ===[NOTIFICATIONS AND MESSAGES MODELS]===========================================================
@@ -323,8 +313,8 @@ model Notification {
   userId       String
   user         User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
   // Optional relation to specific camp participation - Comp Relation
-  userToCampId String?
-  userToCamp   UserToCamp?            @relation(fields: [userToCampId], references: [id], onDelete: Cascade)
+  userToBookId String?
+  userToBook   UserToBook?            @relation(fields: [userToBookId], references: [id], onDelete: Cascade)
   // Optional creator (SYSTEM or USER) - User Relation
   createdById  String?
   createdBy    User?                  @relation("notificationCreator", fields: [createdById], references: [id], onDelete: SetNull)
