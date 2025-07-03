@@ -74,7 +74,7 @@ model User {
   personalData         PersonalData?
   // Camp Participation and Ownership
   userToBooks          UserToBook[]
-  BookOwning          FicoBook[]              @relation("bookOwner")
+  BookOwning           FicoBook[]          @relation("bookOwner")
   // Notifications
   Notification         Notification[]
   notificationsCreated Notification[]      @relation("notificationCreator")
@@ -194,7 +194,8 @@ model Authenticator {
 
   @@id([userId, credentialID])
 }
-// ===[Fico]==========================================================================================
+
+// ===[FICO]========================================================================================
 
 enum FicoEntryType {
   INCOME
@@ -202,72 +203,72 @@ enum FicoEntryType {
 }
 
 model FicoBook {
-  id          String    @id @default(uuid())
+  id             String         @id @default(uuid())
   // Basic Details
-  name        String
-  description String?   @db.Text()
-  region      UserRegion
-  openedAt    DateTime
-  closedAt    DateTime?
-  approvedAt DateTime?
-  isClosed    Boolean   @default(false)
+  name           String
+  description    String?        @db.Text()
+  region         UserRegion
+  openedAt       DateTime
+  closedAt       DateTime?
+  approvedAt     DateTime?
+  isClosed       Boolean        @default(false)
   // Financial Summary
-  incomeSum   Decimal   @default("0.00") @db.Decimal(15, 2)
-  expenseSum  Decimal   @default("0.00") @db.Decimal(15, 2)
-  balanceSum  Decimal   @default("0.00") @db.Decimal(15, 2)
+  incomeSum      Decimal        @default("0.00") @db.Decimal(15, 2)
+  expenseSum     Decimal        @default("0.00") @db.Decimal(15, 2)
+  balanceSum     Decimal        @default("0.00") @db.Decimal(15, 2)
   // Relations
-  ownerId      String
-  owner        User         @relation("bookOwner", fields: [ownerId], references: [id])
-  pages       FicoPage[]
+  ownerId        String
+  owner          User           @relation("bookOwner", fields: [ownerId], references: [id])
+  pages          FicoPage[]
   ficoCategories FicoCategory[]
-  userToBooks UserToBook[]
+  userToBooks    UserToBook[]
   // Timestamps
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
 
   @@index([openedAt, closedAt])
   @@index([region])
 }
 
 model FicoPage {
-  id String @id @default(uuid())
+  id            String        @id @default(uuid())
   // Basic Details
-  name String @db.Text()
+  name          String        @db.Text()
   invoiceNumber String
-  timestamp DateTime
-  type FicoEntryType
-  value Decimal @default("0.00") @db.Decimal(15, 2)
+  timestamp     DateTime
+  type          FicoEntryType
+  value         Decimal       @default("0.00") @db.Decimal(15, 2)
   // Relations
-  ficoBook FicoBook @relation(fields: [ficoBookId], references: [id])
-  ficoBookId String
-  entries FicoEntry[]
+  ficoBook      FicoBook      @relation(fields: [ficoBookId], references: [id])
+  ficoBookId    String
+  entries       FicoEntry[]
   // Timestamps
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 }
 
 model FicoEntry {
-  id String @id @default(uuid())
+  id             String       @id @default(uuid())
   // Basic Details
-  amount Decimal @db.Decimal(15, 2) @default(0.00)
+  amount         Decimal      @default(0.00) @db.Decimal(15, 2)
   // Relations
-  FicoPage   FicoPage @relation(fields: [FicoPageId], references: [id])
-  FicoPageId String
-  FicoCategory FicoCategory @relation(fields: [FicoCategoryId], references: [id])
-  FicoCategoryId String
+  ficoPage       FicoPage     @relation(fields: [ficoPageId], references: [id])
+  ficoPageId     String
+  ficoCategory   FicoCategory @relation(fields: [ficoCategoryId], references: [id])
+  ficoCategoryId String
 }
 
 model FicoCategory {
-  id String @id @default(uuid())
-  name String
-  type FicoEntryType
-  isCustom Boolean @default(true)
+  id          String        @id @default(uuid())
+  name        String
+  type        FicoEntryType
+  isCustom    Boolean       @default(true)
   ficoEntries FicoEntry[]
-  ficoBook FicoBook? @relation(fields: [ficoBookId], references: [id], onDelete: Cascade)
-  ficoBookId String?
+  ficoBook    FicoBook?     @relation(fields: [ficoBookId], references: [id], onDelete: Cascade)
+  ficoBookId  String?
   // Timestamps
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 }
 
 model UserToBook {
@@ -275,8 +276,8 @@ model UserToBook {
   id           String         @id @default(uuid())
   userId       String
   user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  FicoBookId       String
-  FicoBook         FicoBook           @relation(fields: [FicoBookId], references: [id], onDelete: Cascade)
+  ficoBookId   String
+  ficoBook     FicoBook       @relation(fields: [ficoBookId], references: [id], onDelete: Cascade)
   // Invitation state
   accepted     Boolean        @default(false)
   // Timestamps
@@ -285,9 +286,9 @@ model UserToBook {
   // Notification relation
   Notification Notification[]
 
-  @@unique([userId, FicoBookId])
+  @@unique([userId, ficoBookId])
   @@index([userId])
-  @@index([FicoBookId])
+  @@index([ficoBookId])
 }
 
 // ===[NOTIFICATIONS AND MESSAGES MODELS]===========================================================
