@@ -1,6 +1,7 @@
 // @file: packages/types/src/fico-book-panel.ts
 import { UserRegion } from './user'
-export type FicoMoneyValue = number | string | null
+// export type FicoMoneyValue = number | string | null
+export type FicoMoneyValue = number | null
 
 // SERVER >>> CLIENT --- READ
 export interface FicoBookPanelDto {
