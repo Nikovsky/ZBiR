@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@zbir/database';
-import { CreateCampDto, EditCampDto, AddCampParticipantDto, AcceptCampParticipantDto, CampParticipantRemoveDto, CampQueryDto } from './camp.dto';
-import { CampPanelDto, CampPanelSortFields, DEFAULT_PAGINATION_LIMIT, PaginationResponse, SortDirection, UserRole } from '@zbir/types';
-import { JwtRequestUser } from '@/interfaces/jwt-request-user.interface';
+// import { CreateCampDto, EditCampDto, AddCampParticipantDto, AcceptCampParticipantDto, CampParticipantRemoveDto, CampQueryDto } from './camp.dto';
+// import { CampPanelDto, CampPanelSortFields, DEFAULT_PAGINATION_LIMIT, PaginationResponse, SortDirection, UserRole } from '@zbir/types';
+// import { JwtRequestUser } from '@/interfaces/jwt-request-user.interface';
 
 @Injectable()
 export class CampService {

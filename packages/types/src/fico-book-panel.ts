@@ -15,7 +15,14 @@ export interface FicoBookPanelDto {
   incomeSum: FicoMoneyValue
   expenseSum: FicoMoneyValue
   balanceSum: FicoMoneyValue
-  ownerId: string
+}
+
+export interface FicoBookPanelWithOwnerDto extends FicoBookPanelDto {
+  owner: {
+    id: string
+    name?: string | null
+    email: string
+  }
 }
 
 // CLIENT >>> SERVER --- CREATE
@@ -59,5 +66,4 @@ export enum FicoBookPanelSortFields {
   INCOME_SUM = 'incomeSum',
   EXPENSE_SUM = 'expenseSum',
   BALANCE_SUM = 'balanceSum',
-  OWNER_ID = 'ownerId'
 }

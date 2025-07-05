@@ -4,10 +4,10 @@ import { RolesGuard } from '@/guards/roles.guard';
 import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { UserRole } from '@zbir/types';
 import { CampService } from './camp.service';
-import { CampQueryDto } from './camp.dto';
-import { PaginationResponse, CampPanelDto } from '@zbir/types';
-import { CurrentUser } from '@/decorators/current-user.decorator';
-import { JwtRequestUser } from '@/interfaces/jwt-request-user.interface';
+// import { CampQueryDto } from './camp.dto';
+// import { PaginationResponse, CampPanelDto } from '@zbir/types';
+// import { CurrentUser } from '@/decorators/current-user.decorator';
+// import { JwtRequestUser } from '@/interfaces/jwt-request-user.interface';
 
 
 @Controller('camp')

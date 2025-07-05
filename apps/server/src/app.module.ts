@@ -12,6 +12,8 @@ import { DashboardModule } from './modules/user/dashboard/dashboard.module';
 import { SessionModule } from './modules/admin/session/session.module';
 import { UserModule } from './modules/admin/user/user.module';
 import { CampModule } from './modules/camp/camp.module';
+import { BookModule } from './modules/fico/book/book.module';
+import { PageModule } from './modules/fico/page/page.module';
 import serverConfig from './config/server.config';
 @Module({
   imports: [
@@ -38,7 +40,9 @@ import serverConfig from './config/server.config';
     DashboardModule,
     SessionModule,
     UserModule,
-    CampModule
+    CampModule,
+    BookModule,
+    PageModule
   ],
   controllers: [AppController],
   providers: [
