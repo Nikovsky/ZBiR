@@ -1,7 +1,7 @@
 // @file: server/sec/modules/fico/book/book.service.ts
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@zbir/database';
-import { PaginationResponse, UserRegion, UserRole, FicoBookPanelDto, DEFAULT_PAGINATION_LIMIT, FicoBookPanelWithOwnerDto, FicoBookPanelSortFields, SortDirection } from '@zbir/types';
+import { PaginationResponse, APIMessageResponse, UserRegion, UserRole, FicoBookPanelDto, DEFAULT_PAGINATION_LIMIT, FicoBookPanelWithOwnerDto, FicoBookPanelSortFields, SortDirection } from '@zbir/types';
 import { JwtRequestUser } from '@/interfaces/jwt-request-user.interface'
 import { BookQueryDto } from './book.dto';
 import { Decimal } from '@prisma/client/runtime/library';
@@ -51,6 +51,124 @@ export class BookService {
     );
 
     return { data: bookDtos, total, page, limit };
+  }
+
+  async getBookById(id: string, currentUser: JwtRequestUser): Promise<FicoBookPanelDto | FicoBookPanelWithOwnerDto> {
+    const noRegion = currentUser.regionAccess === UserRegion.NONE;
+    if (noRegion) { throw new Error('Access denied: No region access'); }
+
+    const hasAllRegionsAccess = (
+      currentUser.regionAccess === UserRegion.ALL ||
+      currentUser.role === UserRole.SKARBNIK ||
+      currentUser.role === UserRole.ROOT ||
+      currentUser.role === UserRole.ADMIN
+    );
+
+    const book = await this.prisma.ficoBook.findUnique({
+      where: { id },
+      ...(hasAllRegionsAccess ? { include: { owner: true } } : {}),
+    });
+
+    if (!book) { throw new Error('Book not found'); }
+
+    return hasAllRegionsAccess
+      ? this.toBookWithOwnerDto(book)
+      : this.toBookDto(book);
+  }
+
+  async createBook(createBookDto: any, currentUser: JwtRequestUser): Promise<APIMessageResponse> {
+    const noRegion = currentUser.regionAccess === UserRegion.NONE;
+    if (noRegion) { throw new Error('Access denied: No region access'); }
+
+    const hasAllRegionsAccess = (
+      currentUser.regionAccess === UserRegion.ALL ||
+      currentUser.role === UserRole.SKARBNIK ||
+      currentUser.role === UserRole.ROOT ||
+      currentUser.role === UserRole.ADMIN
+    );
+
+    if (!hasAllRegionsAccess && createBookDto.region !== currentUser.regionAccess) {
+      throw new Error('Access denied: Cannot create book in different region');
+    }
+
+    await this.prisma.ficoBook.create({
+      data: {
+        ...createBookDto,
+        ownerId: currentUser.id,
+      },
+    });
+
+    return { message: 'Book created successfully' };
+  }
+
+  async updateBook(id: string, updateBookDto: any, currentUser: JwtRequestUser): Promise<APIMessageResponse> {
+    const noRegion = currentUser.regionAccess === UserRegion.NONE;
+    if (noRegion) { throw new Error('Access denied: No region access'); }
+
+    const hasAllRegionsAccess = (
+      currentUser.regionAccess === UserRegion.ALL ||
+      currentUser.role === UserRole.SKARBNIK ||
+      currentUser.role === UserRole.ROOT ||
+      currentUser.role === UserRole.ADMIN
+    );
+
+    if (!hasAllRegionsAccess && updateBookDto.region !== currentUser.regionAccess) {
+      throw new Error('Access denied: Cannot update book in different region');
+    }
+
+    await this.prisma.ficoBook.update({
+      where: { id },
+      data: updateBookDto,
+    });
+
+    return { message: 'Book updated successfully' };
+  }
+
+  async approveBook(id: string, approveBookDto: any, currentUser: JwtRequestUser): Promise<APIMessageResponse> {
+    const noRegion = currentUser.regionAccess === UserRegion.NONE;
+    if (noRegion) { throw new Error('Access denied: No region access'); }
+
+    const hasAllRegionsAccess = (
+      currentUser.regionAccess === UserRegion.ALL ||
+      currentUser.role === UserRole.SKARBNIK ||
+      currentUser.role === UserRole.ROOT ||
+      currentUser.role === UserRole.ADMIN
+    );
+
+    if (!hasAllRegionsAccess) {
+      throw new Error('Access denied: Only skarbnik or admin can approve books');
+    }
+
+    await this.prisma.ficoBook.update({
+      where: { id },
+      data: {
+        approvedAt: approveBookDto.approvedAt,
+      },
+    });
+
+    return { message: 'Book approved successfully' };
+  }
+
+  async deleteBook(id: string, currentUser: JwtRequestUser): Promise<APIMessageResponse> {
+    const noRegion = currentUser.regionAccess === UserRegion.NONE;
+    if (noRegion) { throw new Error('Access denied: No region access'); }
+
+    const hasAllRegionsAccess = (
+      currentUser.regionAccess === UserRegion.ALL ||
+      currentUser.role === UserRole.SKARBNIK ||
+      currentUser.role === UserRole.ROOT ||
+      currentUser.role === UserRole.ADMIN
+    );
+
+    if (!hasAllRegionsAccess) {
+      throw new Error('Access denied: Only skarbnik or admin can delete books');
+    }
+
+    await this.prisma.ficoBook.delete({
+      where: { id },
+    });
+
+    return { message: 'Book deleted successfully' };
   }
 
   private toBookDto(book: any): FicoBookPanelDto {
