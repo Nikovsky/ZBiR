@@ -9,8 +9,8 @@ import { JwtAuthGuard } from '@/guards/jwt-auth.guard'
 import { RolesGuard } from '@/guards/roles.guard'
 import { Roles } from '@/decorators/roles.decorator'
 
-// @UseGuards(JwtAuthGuard, RolesGuard)
-// @Roles(UserRole.ADMIN, UserRole.ROOT, UserRole.SKARBNIK, UserRole.SKARBNIK_REGION)
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(UserRole.ADMIN, UserRole.ROOT, UserRole.SKARBNIK, UserRole.SKARBNIK_REGION)
 @Controller('fico/book')
 export class BookController {
   constructor(private readonly bookService: BookService) { }

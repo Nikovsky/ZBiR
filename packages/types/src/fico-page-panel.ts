@@ -1,5 +1,5 @@
 // @file: packages/types/src/fico-page-panel.ts
-import { FicoMoneyValue } from "./fico-book-panel";
+import { FicoBookPanelDto, FicoBookPanelWithOwnerDto, FicoMoneyValue } from "./fico-book-panel";
 export enum FicoEntryType { INCOME = 'INCOME', EXPENSE = 'EXPENSE' }
 
 // SERVER >>> CLIENT --- READ
@@ -26,6 +26,18 @@ export interface FicoEntryPanelDto {
 
 export interface FicoPageWithEntriesPanelDto extends FicoPagePanelDto {
   entries: FicoEntryPanelDto[]
+}
+
+export interface FicoPanelViewDto {
+  book: FicoBookPanelDto
+  pages: FicoPageWithEntriesPanelDto[]
+  categories?: FicoCategoryPanelDto[] | null
+}
+
+export interface FicoPanelWithOwnerViewDto {
+  book: FicoBookPanelWithOwnerDto
+  pages: FicoPageWithEntriesPanelDto[]
+  categories?: FicoCategoryPanelDto[] | null
 }
 
 // CLIENT >>> SERVER --- CREATE
