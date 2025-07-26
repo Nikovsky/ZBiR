@@ -13,7 +13,10 @@ import { AuthProvider } from '@/lib/auth/auth.context'
 export const metadata: Metadata = {
   title: 'ZBIR',
   description: 'ZBIR - AUTH SYSTEM BASE',
-  authors: [{ name: 'bos-8', url: 'https://github.com/bos-8' }],
+  authors: [
+    { name: 'bos-8', url: 'https://github.com/bos-8' },
+    { name: 'Nikovsky', url: 'https://github.com/Nikovsky' }
+  ],
 }
 
 export default async function LocaleLayout({

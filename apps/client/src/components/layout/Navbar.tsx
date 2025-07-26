@@ -30,6 +30,15 @@ export default function Navbar() {
           </div>
         </RbacOnly>
 
+        {/* FICO NAV */}
+        <RbacOnly preset={AccessPreset.MODERATORS}>
+          <div className="flex gap-6 text-sm font-medium text-gray-600 dark:text-gray-300">
+            <Link href="/fico/books" className="hover:text-black dark:hover:text-white">
+              KSIĘGI
+            </Link>
+          </div>
+        </RbacOnly>
+
         {/* MAIN NAV */}
         <nav className="flex gap-4 text-sm font-medium text-gray-600 dark:text-gray-300 items-center">
           <RbacOnly preset={AccessPreset.LOGGED}>
