@@ -1,3 +1,4 @@
+// @file: client/src/app/[locale]/fico/books/page.tsx
 'use client'
 
 import { useSearchParams, useRouter } from 'next/navigation'
@@ -137,6 +138,15 @@ export default function FicoBookPage() {
             className="px-4 py-2 text-sm font-medium bg-gray-300 hover:bg-gray-400 text-gray-800 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600 rounded"
           >
             Resetuj filtr
+          </button>
+        </div>
+
+        <div>
+          <button
+            onClick={() => router.push('/fico/book/create')}
+            className="px-4 py-2 text-sm font-medium bg-green-600 hover:bg-green-700 text-white rounded"
+          >
+            Utwórz nową książkę
           </button>
         </div>
       </div>
