@@ -55,12 +55,12 @@ Aplikacja **ZBiR** powstała jako odpowiedź na ograniczenia Excela w zarządzan
 
 | Moduł / Funkcja           | Status     |
 |---------------------------|------------|
-| 🔐 Rejestracja i logowanie | 🛠 W trakcie    |
-| 🔑 JWT + Refresh Token     | 🔜 Planowane   |
-| 🛂 RBAC                   | 🔜 Planowane  |
-| 🏕 Moduł wydarzeń (`Camp`) | 🔜 Planowane  |
-| 💸 Wpisy finansowe (`Entry`) | 🔜 Planowane |
-| 📤 Eksport PDF             | 🔜 Planowane |
+| 🔐 Rejestracja i logowanie | ✅ Zrealizowane    |
+| 🔑 JWT + Refresh Token     | ✅ Zrealizowane   |
+| 🛂 RBAC                   | ✅ Zrealizowane  |
+| 🏕 Moduł wydarzeń (`Camp`) | 🛠 W trakcie  |
+| 💸 Wpisy finansowe (`Entry`) | 🛠 W trakcie |
+| 📤 Eksport PDF             | 🛠 W trakcie |
 | 📦 Docker Compose         | 🔜 Planowane |
 | 🔭 Monitoring i CI/CD      | 🔜 W planach |
 
